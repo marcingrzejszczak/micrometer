@@ -21,6 +21,7 @@ import io.micrometer.core.event.interval.IntervalRecording;
 import io.micrometer.core.event.interval.NoOpIntervalRecording;
 import io.micrometer.core.event.interval.SimpleIntervalRecording;
 import io.micrometer.core.event.listener.RecordingListener;
+import io.micrometer.core.event.listener.composite.CompositeContext;
 import io.micrometer.core.instrument.Clock;
 
 /**
@@ -28,15 +29,23 @@ import io.micrometer.core.instrument.Clock;
  *
  * @author Jonatan Ivanov
  * @since 6.0.0
- * @param <T> context type
  */
-public class SimpleRecorder<T> implements Recorder<T> {
+public class SimpleRecorder implements Recorder {
 
-	private final RecordingListener<T> listener;
+	private final RecordingListener<CompositeContext> listener;
 
 	private final Clock clock;
 
 	private volatile boolean enabled;
+
+    /**
+     * Create a new {@link SimpleRecorder}.
+     *
+     * @param listener the listener that needs to be notified about the recordings
+     */
+    public SimpleRecorder(RecordingListener<CompositeContext> listener) {
+        this(listener, Clock.SYSTEM);
+    }
 
 	/**
 	 * Create a new {@link SimpleRecorder}.
@@ -44,15 +53,15 @@ public class SimpleRecorder<T> implements Recorder<T> {
 	 * @param listener the listener that needs to be notified about the recordings
 	 * @param clock the clock to be used
 	 */
-	public SimpleRecorder(RecordingListener<T> listener, Clock clock) {
+	public SimpleRecorder(RecordingListener<CompositeContext> listener, Clock clock) {
 		this.listener = listener;
 		this.clock = clock;
 		this.enabled = true;
 	}
 
 	@Override
-	public IntervalRecording<T> recordingFor(IntervalEvent event) {
-		return this.enabled ? new SimpleIntervalRecording<>(event, this.listener, this.clock) : new NoOpIntervalRecording<>();
+	public IntervalRecording recordingFor(IntervalEvent event) {
+		return this.enabled ? new SimpleIntervalRecording(event, this.listener, this.clock) : new NoOpIntervalRecording();
 	}
 
 //	@Override

@@ -45,21 +45,21 @@ public interface RecordingListener<T> extends ContextFactory<T> {
 	 *
 	 * @param intervalRecording the recording that was created
 	 */
-	void onCreate(IntervalRecording<T> intervalRecording);
+	void onCreate(IntervalRecording intervalRecording);
 
 	/**
 	 * Called after the recording was started.
 	 *
 	 * @param intervalRecording the recording that was started
 	 */
-	void onStart(IntervalRecording<T> intervalRecording);
+	void onStart(IntervalRecording intervalRecording);
 
 	/**
 	 * Called after the recording was stopped.
 	 *
 	 * @param intervalRecording the recording that was stopped
 	 */
-	void onStop(IntervalRecording<T> intervalRecording);
+	void onStop(IntervalRecording intervalRecording);
 
 	/**
 	 * Called after a {@link Throwable} was thrown during the recording.
@@ -67,14 +67,14 @@ public interface RecordingListener<T> extends ContextFactory<T> {
 	 * @param intervalRecording the recording that was in progress when the error
 	 * happened
 	 */
-	void onError(IntervalRecording<T> intervalRecording);
+	void onError(IntervalRecording intervalRecording);
 
 	/**
 	 * Called when the recording is to be restored e.g. in a new thread.
 	 *
 	 * @param intervalRecording the recording that was started
 	 */
-	void onRestore(IntervalRecording<T> intervalRecording);
+	void onRestore(IntervalRecording intervalRecording);
 
 //	/**
 //	 * Signals that an {@link InstantEvent} was recorded.

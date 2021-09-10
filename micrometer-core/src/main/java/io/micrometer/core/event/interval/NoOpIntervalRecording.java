@@ -19,6 +19,7 @@ package io.micrometer.core.event.interval;
 import java.time.Duration;
 import java.util.Collections;
 
+import io.micrometer.core.event.listener.RecordingListener;
 import io.micrometer.core.instrument.Tag;
 
 /**
@@ -27,9 +28,8 @@ import io.micrometer.core.instrument.Tag;
  *
  * @author Jonatan Ivanov
  * @since 6.0.0
- * @param <T> context type
  */
-public class NoOpIntervalRecording<T> implements IntervalRecording<T> {
+public class NoOpIntervalRecording implements IntervalRecording {
 
 	private static final IntervalEvent EVENT = new NoOpIntervalEvent();
 
@@ -48,7 +48,7 @@ public class NoOpIntervalRecording<T> implements IntervalRecording<T> {
 	}
 
 	@Override
-	public IntervalRecording<T> highCardinalityName(String highCardinalityName) {
+	public IntervalRecording highCardinalityName(String highCardinalityName) {
 		return this;
 	}
 
@@ -58,7 +58,7 @@ public class NoOpIntervalRecording<T> implements IntervalRecording<T> {
 	}
 
 	@Override
-	public IntervalRecording<T> tag(Tag tag) {
+	public IntervalRecording tag(Tag tag) {
 		return this;
 	}
 
@@ -83,17 +83,17 @@ public class NoOpIntervalRecording<T> implements IntervalRecording<T> {
 	}
 
 	@Override
-	public IntervalRecording<T> start() {
+	public IntervalRecording start() {
 		return this;
 	}
 
 	@Override
-	public IntervalRecording<T> restore() {
+	public IntervalRecording restore() {
 		return this;
 	}
 
 	@Override
-	public IntervalRecording<T> start(long wallTime, long monotonicTime) {
+	public IntervalRecording start(long wallTime, long monotonicTime) {
 		return this;
 	}
 
@@ -111,12 +111,12 @@ public class NoOpIntervalRecording<T> implements IntervalRecording<T> {
 	}
 
 	@Override
-	public IntervalRecording<T> error(Throwable error) {
+	public IntervalRecording error(Throwable error) {
 		return this;
 	}
 
 	@Override
-	public T getContext() {
+	public <T> T getContext(RecordingListener<T> listener) {
 		return null;
 	}
 

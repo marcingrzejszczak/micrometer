@@ -26,9 +26,8 @@ import io.micrometer.core.event.interval.IntervalRecording;
  *
  * @author Jonatan Ivanov
  * @since 6.0.0
- * @param <T> context type
  */
-public interface Recorder<T> {
+public interface Recorder {
 
 	/**
 	 * Creates a recording for an {@link IntervalEvent}.
@@ -36,7 +35,7 @@ public interface Recorder<T> {
 	 * @param event an {@link IntervalEvent} to create a recording for
 	 * @return an {@link IntervalRecording} for the provided {@link IntervalEvent}
 	 */
-	IntervalRecording<T> recordingFor(IntervalEvent event);
+	IntervalRecording recordingFor(IntervalEvent event);
 
 //	/**
 //	 * Creates a recording for an {@link InstantEvent}.

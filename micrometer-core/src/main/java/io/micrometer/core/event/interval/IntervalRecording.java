@@ -19,6 +19,7 @@ package io.micrometer.core.event.interval;
 import java.time.Duration;
 
 import io.micrometer.core.event.Recording;
+import io.micrometer.core.event.listener.RecordingListener;
 import io.micrometer.core.lang.Nullable;
 
 /**
@@ -26,9 +27,8 @@ import io.micrometer.core.lang.Nullable;
  *
  * @author Jonatan Ivanov
  * @since 6.0.0
- * @param <T> context type
  */
-public interface IntervalRecording<T> extends Recording<IntervalEvent, IntervalRecording<T>>, AutoCloseable {
+public interface IntervalRecording extends Recording<IntervalEvent, IntervalRecording>, AutoCloseable {
 
 	/**
 	 * The duration of the event.
@@ -66,14 +66,14 @@ public interface IntervalRecording<T> extends Recording<IntervalEvent, IntervalR
 	 *
 	 * @return this
 	 */
-	IntervalRecording<T> start();
+	IntervalRecording start();
 
 	/**
 	 * Restores the recording (e.g. puts objects in scope in a new thread).
 	 *
 	 * @return this
 	 */
-	IntervalRecording<T> restore();
+	IntervalRecording restore();
 
 	/**
 	 * Signals the beginning of an {@link IntervalEvent} at a given time.
@@ -84,7 +84,7 @@ public interface IntervalRecording<T> extends Recording<IntervalEvent, IntervalR
 	 * compared with another value to determine the elapsed time
 	 * @return itself
 	 */
-	IntervalRecording<T> start(long wallTime, long monotonicTime);
+	IntervalRecording start(long wallTime, long monotonicTime);
 
 	/**
 	 * Signals the end of an {@link IntervalEvent}.
@@ -113,14 +113,15 @@ public interface IntervalRecording<T> extends Recording<IntervalEvent, IntervalR
 	 * @param error the {@link Throwable} to set
 	 * @return this
 	 */
-	IntervalRecording<T> error(Throwable error);
+	IntervalRecording error(Throwable error);
 
 	/**
-	 * Returns a context object in case you need to pass data between listener methods.
+	 * Returns the context object for the actual listener in case you need to pass data between listener methods.
 	 *
+     * @param listener the listener that created the context object
 	 * @return a context object
 	 */
-	T getContext();
+	<T> T getContext(RecordingListener<T> listener);
 
 	@Override
 	default void close() {

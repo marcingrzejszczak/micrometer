@@ -54,33 +54,28 @@ public class FirstMatchingCompositeRecordingListener implements CompositeRecordi
 	}
 
 	@Override
-	public void onCreate(IntervalRecording<CompositeContext> intervalRecording) {
-		getFirstApplicableListener(intervalRecording)
-				.ifPresent(listener -> listener.onCreate(new IntervalRecordingView<>(listener, intervalRecording)));
+	public void onCreate(IntervalRecording intervalRecording) {
+		getFirstApplicableListener(intervalRecording).ifPresent(listener -> listener.onCreate(intervalRecording));
 	}
 
 	@Override
-	public void onStart(IntervalRecording<CompositeContext> intervalRecording) {
-		getFirstApplicableListener(intervalRecording)
-				.ifPresent(listener -> listener.onStart(new IntervalRecordingView<>(listener, intervalRecording)));
+	public void onStart(IntervalRecording intervalRecording) {
+		getFirstApplicableListener(intervalRecording).ifPresent(listener -> listener.onStart(intervalRecording));
 	}
 
 	@Override
-	public void onStop(IntervalRecording<CompositeContext> intervalRecording) {
-		getFirstApplicableListener(intervalRecording)
-				.ifPresent(listener -> listener.onStop(new IntervalRecordingView<>(listener, intervalRecording)));
+	public void onStop(IntervalRecording intervalRecording) {
+		getFirstApplicableListener(intervalRecording).ifPresent(listener -> listener.onStop(intervalRecording));
 	}
 
 	@Override
-	public void onError(IntervalRecording<CompositeContext> intervalRecording) {
-		getFirstApplicableListener(intervalRecording)
-				.ifPresent(listener -> listener.onError(new IntervalRecordingView<>(listener, intervalRecording)));
+	public void onError(IntervalRecording intervalRecording) {
+		getFirstApplicableListener(intervalRecording).ifPresent(listener -> listener.onError(intervalRecording));
 	}
 
 	@Override
-	public void onRestore(IntervalRecording<CompositeContext> intervalRecording) {
-		getFirstApplicableListener(intervalRecording)
-				.ifPresent(listener -> listener.onRestore(new IntervalRecordingView<>(listener, intervalRecording)));
+	public void onRestore(IntervalRecording intervalRecording) {
+		getFirstApplicableListener(intervalRecording).ifPresent(listener -> listener.onRestore(intervalRecording));
 	}
 
 //	@Override
