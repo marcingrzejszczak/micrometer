@@ -15,7 +15,34 @@
  */
 package io.micrometer.core.instrument;
 
+import static java.lang.String.format;
+import static java.util.Collections.emptyList;
+import static java.util.Objects.requireNonNull;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.ToDoubleFunction;
+import java.util.function.ToLongFunction;
+
 import io.micrometer.core.annotation.Incubating;
+import io.micrometer.core.event.interval.IntervalRecording;
 import io.micrometer.core.event.listener.RecordingListener;
 import io.micrometer.core.event.listener.composite.CompositeContext;
 import io.micrometer.core.instrument.Meter.Id;
@@ -41,29 +68,6 @@ import io.micrometer.core.instrument.util.TimeUtils;
 import io.micrometer.core.lang.NonNull;
 import io.micrometer.core.lang.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.ToDoubleFunction;
-import java.util.function.ToLongFunction;
-
-import static java.lang.String.format;
-import static java.util.Collections.emptyList;
-import static java.util.Objects.requireNonNull;
-
 /**
  * Creates and manages your application's set of meters. Exporters use the meter registry to iterate
  * over the set of meters instrumenting your application, and then further iterate over each meter's metrics, generally
@@ -87,6 +91,9 @@ public abstract class MeterRegistry {
     private final List<BiConsumer<Meter.Id, String>> meterRegistrationFailedListeners = new CopyOnWriteArrayList<>();
     private final Config config = new Config();
     private final More more = new More();
+
+    private final ThreadLocal<IntervalRecording> threadLocalRecordings = new ThreadLocal<>();
+    private final Deque<IntervalRecording> recordings = new LinkedBlockingDeque<>();
 
     // Even though writes are guarded by meterMapLock, iterators across value space are supported
     // Hence, we use CHM to support that iteration without ConcurrentModificationException risk
@@ -117,6 +124,42 @@ public abstract class MeterRegistry {
     protected MeterRegistry(Clock clock) {
         requireNonNull(clock);
         this.clock = clock;
+    }
+
+    public void setCurrentRecording(IntervalRecording recording) {
+        IntervalRecording old = this.threadLocalRecordings.get();
+        if (old != null) {
+//            log.trace(() -> "Putting previous recording to stack [" + old + "]");
+            this.recordings.addFirst(old);
+        }
+        this.threadLocalRecordings.set(recording);
+    }
+
+    /**
+     * Returns the current interval recording.
+     *
+     * @return currently stored recording
+     */
+    public IntervalRecording getCurrentRecording() {
+        return this.threadLocalRecordings.get();
+    }
+
+    /**
+     * Removes the current span from thread local and brings back the previous span
+     * to the current thread local.
+     */
+    public void removeCurrentRecording() {
+        this.threadLocalRecordings.remove();
+        if (this.recordings.isEmpty()) {
+            return;
+        }
+        try {
+            IntervalRecording first = this.recordings.removeFirst();
+//            log.debug(() -> "Took recording [" + first + "] from thread local");
+            this.threadLocalRecordings.set(first);
+        } catch (NoSuchElementException ex) {
+//            log.trace(ex, () -> "Failed to remove a recording from the queue");
+        }
     }
 
     /**

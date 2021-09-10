@@ -144,6 +144,11 @@ public abstract class AbstractTimer extends AbstractMeter implements Timer {
     }
 
     @Override
+    public MeterRegistry getMeterRegistry() {
+        return this.meterRegistry;
+    }
+
+    @Override
     public <T> T recordCallable(Callable<T> f) throws Exception {
         if (this.meterRegistry != null) {
             return recordCallable(Timer.sample(() -> "callable", this.meterRegistry), f);

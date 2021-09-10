@@ -17,7 +17,6 @@
 package io.micrometer.core.event.listener.composite;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,10 +42,18 @@ public class CompositeContext {
 	CompositeContext(List<? extends RecordingListener<?>> listeners) {
 		// Could be a .stream().collect(toMap(...)) but toMap fails on null values:
 		// https://bugs.openjdk.java.net/browse/JDK-8148463
-		for (RecordingListener<?> listener : listeners) {
-			this.contexts.put(listener, listener.createContext());
-		}
+		addContexts(listeners);
 	}
+
+    private void addContexts(List<? extends RecordingListener<?>> listeners) {
+        for (RecordingListener<?> listener : listeners) {
+            if (listener instanceof CompositeRecordingListener) {
+                addContexts(((CompositeRecordingListener) listener).getListeners());
+            } else {                
+                this.contexts.put(listener, listener.createContext());
+            }
+		}
+    }
 
 	@SuppressWarnings("unchecked")
 	public <T> T byListener(RecordingListener<T> listener) {

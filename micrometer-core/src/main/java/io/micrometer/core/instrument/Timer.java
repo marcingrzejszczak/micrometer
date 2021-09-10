@@ -66,6 +66,15 @@ public interface Timer extends Meter, HistogramSupport {
 
     }
 
+    @Nullable
+    default MeterRegistry getMeterRegistry() {
+        return null;
+    }
+
+    default Sample toSample(IntervalEvent event) {
+        return start(event, getMeterRegistry());
+    }
+
     /**
      * @param registry A meter registry against which the timer will be registered.
      * @param name     The name of the timer.
@@ -256,8 +265,12 @@ public interface Timer extends Meter, HistogramSupport {
     class Sample implements Recording<IntervalEvent, Sample>, AutoCloseable {
         private static final IntervalRecording NOOP_RECORDING = new NoOpIntervalRecording();
         private final IntervalRecording recording;
+        private final MeterRegistry registry;
+
+        private Timer timer;
 
         Sample(IntervalEvent event, MeterRegistry registry) {
+            this.registry = registry;
             RecordingListener<CompositeContext> listener = registry.config().recordingListener();
             if (listener != null) {
                 recording = new SimpleIntervalRecording(event, listener, registry.config().clock());
@@ -265,6 +278,12 @@ public interface Timer extends Meter, HistogramSupport {
             else {
                 recording = NOOP_RECORDING;
             }
+            listener.onCreate(recording);
+            registry.setCurrentRecording(recording);
+        }
+
+        public void setTimer(Timer timer) {
+            this.timer = timer;
         }
 
         @Override
@@ -310,7 +329,11 @@ public interface Timer extends Meter, HistogramSupport {
         }
 
         public void stop() {
-            recording.stop();
+            long durationNs = getDuration().toNanos();
+            if (timer != null) {
+                timer.record(durationNs, TimeUnit.NANOSECONDS); // nope - why?
+            }
+            close();
         }
 
         public void stop(long monotonicTime) {
@@ -355,11 +378,13 @@ public interface Timer extends Meter, HistogramSupport {
         @Override
         public void close() {
             recording.close();
+            registry.removeCurrentRecording();
         }
 
         public long stop(Timer timer) {
             long durationNs = getDuration().toNanos();
-            timer.record(durationNs, TimeUnit.NANOSECONDS); // nope
+            timer.record(durationNs, TimeUnit.NANOSECONDS); // nope - why?
+            close();
             return durationNs;
         }
     }
