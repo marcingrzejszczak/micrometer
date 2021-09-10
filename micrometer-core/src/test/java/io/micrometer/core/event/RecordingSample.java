@@ -1,7 +1,10 @@
 package io.micrometer.core.event;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.UUID;
+
+import org.junit.jupiter.api.Test;
 
 import io.micrometer.core.event.interval.IntervalRecording;
 import io.micrometer.core.event.listener.RecordingListener;
@@ -12,7 +15,6 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
-import org.junit.jupiter.api.Test;
 
 class RecordingSample {
 
@@ -51,6 +53,20 @@ class RecordingSample {
         Thread.sleep(500);
         sample.error(new IOException("simulated"));
         sample.stop();
+    }
+
+    @Test
+    void doesItWorkWithTimer() throws InterruptedException {
+        RecordingListener<CompositeContext> listener = new AllMatchingCompositeRecordingListener(
+                new SoutRecordingListenerWoContext(), new SoutRecordingListenerWContext());
+        MeterRegistry registry = new SimpleMeterRegistry();
+        registry.config().recordingListener(listener);
+
+        registry.timer("testEvent",
+                Collections.singletonList(Tag.of("c", UUID.randomUUID().toString(), Cardinality.HIGH)))
+                .record(() -> System.out.println("HELLO"));
+
+        Thread.sleep(500);
     }
 
 

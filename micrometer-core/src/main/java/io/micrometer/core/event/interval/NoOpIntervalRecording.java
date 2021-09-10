@@ -48,7 +48,7 @@ public class NoOpIntervalRecording implements IntervalRecording {
 	}
 
 	@Override
-	public IntervalRecording highCardinalityName(String highCardinalityName) {
+	public IntervalRecording setHighCardinalityName(String highCardinalityName) {
 		return this;
 	}
 

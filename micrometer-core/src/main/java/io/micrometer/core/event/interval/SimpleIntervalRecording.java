@@ -87,7 +87,7 @@ public class SimpleIntervalRecording implements IntervalRecording {
 	}
 
 	@Override
-	public IntervalRecording highCardinalityName(String highCardinalityName) {
+	public IntervalRecording setHighCardinalityName(String highCardinalityName) {
 		this.highCardinalityName = highCardinalityName;
 		return this;
 	}

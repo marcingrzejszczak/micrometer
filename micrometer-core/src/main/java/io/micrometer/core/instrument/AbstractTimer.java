@@ -15,20 +15,26 @@
  */
 package io.micrometer.core.instrument;
 
-import io.micrometer.core.instrument.distribution.*;
-import io.micrometer.core.instrument.distribution.pause.ClockDriftPauseDetector;
-import io.micrometer.core.instrument.distribution.pause.PauseDetector;
-import io.micrometer.core.instrument.util.MeterEquivalence;
-import io.micrometer.core.lang.Nullable;
-import org.LatencyUtils.IntervalEstimator;
-import org.LatencyUtils.SimplePauseDetector;
-import org.LatencyUtils.TimeCappedMovingAverageIntervalEstimator;
-
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
+
+import org.LatencyUtils.IntervalEstimator;
+import org.LatencyUtils.SimplePauseDetector;
+import org.LatencyUtils.TimeCappedMovingAverageIntervalEstimator;
+
+import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
+import io.micrometer.core.instrument.distribution.Histogram;
+import io.micrometer.core.instrument.distribution.HistogramSnapshot;
+import io.micrometer.core.instrument.distribution.NoopHistogram;
+import io.micrometer.core.instrument.distribution.TimeWindowFixedBoundaryHistogram;
+import io.micrometer.core.instrument.distribution.TimeWindowPercentileHistogram;
+import io.micrometer.core.instrument.distribution.pause.ClockDriftPauseDetector;
+import io.micrometer.core.instrument.distribution.pause.PauseDetector;
+import io.micrometer.core.instrument.util.MeterEquivalence;
+import io.micrometer.core.lang.Nullable;
 
 public abstract class AbstractTimer extends AbstractMeter implements Timer {
     private static Map<PauseDetector, org.LatencyUtils.PauseDetector> pauseDetectorCache =
@@ -37,6 +43,7 @@ public abstract class AbstractTimer extends AbstractMeter implements Timer {
     protected final Clock clock;
     protected final Histogram histogram;
     private final TimeUnit baseTimeUnit;
+    private MeterRegistry meterRegistry;
 
     // Only used when pause detection is enabled
     @Nullable
@@ -132,7 +139,15 @@ public abstract class AbstractTimer extends AbstractMeter implements Timer {
     }
 
     @Override
+    public void setMeterRegistry(MeterRegistry meterRegistry) {
+        this.meterRegistry = meterRegistry;
+    }
+
+    @Override
     public <T> T recordCallable(Callable<T> f) throws Exception {
+        if (this.meterRegistry != null) {
+            return recordCallable(Timer.sample(() -> "callable", this.meterRegistry), f);
+        }
         final long s = clock.monotonicTime();
         try {
             return f.call();
@@ -144,6 +159,9 @@ public abstract class AbstractTimer extends AbstractMeter implements Timer {
 
     @Override
     public <T> T record(Supplier<T> f) {
+        if (this.meterRegistry != null) {
+            return record(Timer.sample(() -> "callable", this.meterRegistry), f);
+        }
         final long s = clock.monotonicTime();
         try {
             return f.get();
@@ -155,6 +173,10 @@ public abstract class AbstractTimer extends AbstractMeter implements Timer {
 
     @Override
     public void record(Runnable f) {
+        if (this.meterRegistry != null) {
+            record(Timer.sample(() -> "callable", this.meterRegistry), f);
+            return;
+        }
         final long s = clock.monotonicTime();
         try {
             f.run();
@@ -173,6 +195,42 @@ public abstract class AbstractTimer extends AbstractMeter implements Timer {
             if (intervalEstimator != null) {
                 intervalEstimator.recordInterval(clock.monotonicTime());
             }
+        }
+    }
+
+    private <T> T recordCallable(Timer.Sample sample, Callable<T> f) throws Exception {
+        Sample start = sample.start();
+        try {
+            return f.call();
+        } catch (Exception e) {
+            start.error(e);
+            throw e;
+        } finally {
+            start.close();
+        }
+    }
+
+    private <T> T record(Timer.Sample sample, Supplier<T> f) {
+        Sample start = sample.start();
+        try {
+            return f.get();
+        } catch (Exception e) {
+            start.error(e);
+            throw e;
+        } finally {
+            start.close();
+        }
+    }
+
+    private void record(Timer.Sample sample, Runnable f) {
+        Sample start = sample.start();
+        try {
+            f.run();
+        } catch (Exception e) {
+            start.error(e);
+            throw e;
+        } finally {
+            start.close();
         }
     }
 

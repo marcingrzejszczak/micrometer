@@ -15,6 +15,12 @@
  */
 package io.micrometer.core.instrument;
 
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
+
 import io.micrometer.core.annotation.Incubating;
 import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.event.Recording;
@@ -29,12 +35,6 @@ import io.micrometer.core.instrument.distribution.HistogramSupport;
 import io.micrometer.core.instrument.distribution.ValueAtPercentile;
 import io.micrometer.core.instrument.distribution.pause.PauseDetector;
 import io.micrometer.core.lang.Nullable;
-
-import java.time.Duration;
-import java.util.Arrays;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
 
 /**
  * Timer intended to track of a large number of short running events. Example would be something like
@@ -55,11 +55,15 @@ public interface Timer extends Meter, HistogramSupport {
     }
 
     static Sample start(MeterRegistry registry) {
-        return null; // nope
+        return new Sample(() -> "sample", registry); // nope
     }
 
     static Builder builder(String name) {
         return new Builder(name);
+    }
+
+    default void setMeterRegistry(MeterRegistry meterRegistry) {
+
     }
 
     /**
@@ -274,8 +278,8 @@ public interface Timer extends Meter, HistogramSupport {
         }
 
         @Override
-        public Sample highCardinalityName(String highCardinalityName) {
-            recording.highCardinalityName(highCardinalityName);
+        public Sample setHighCardinalityName(String highCardinalityName) {
+            recording.setHighCardinalityName(highCardinalityName);
             return this;
         }
 
@@ -323,6 +327,7 @@ public interface Timer extends Meter, HistogramSupport {
             return recording.getTags();
         }
 
+        @Override
         public Sample tag(Tag tag) {
             recording.tag(tag);
             return this;
@@ -348,7 +353,7 @@ public interface Timer extends Meter, HistogramSupport {
         }
 
         @Override
-        public void close() throws Exception {
+        public void close() {
             recording.close();
         }
 
@@ -473,8 +478,11 @@ public interface Timer extends Meter, HistogramSupport {
          */
         public Timer register(MeterRegistry registry) {
             // the base unit for a timer will be determined by the monitoring system implementation
-            return registry.timer(new Meter.Id(name, tags, null, description, Type.TIMER), distributionConfigBuilder.build(),
+            Timer timer = registry.timer(new Meter.Id(name, tags, null, description, Type.TIMER),
+                    distributionConfigBuilder.build(),
                     pauseDetector == null ? registry.config().pauseDetector() : pauseDetector);
+            timer.setMeterRegistry(registry);
+            return timer;
         }
     }
 }

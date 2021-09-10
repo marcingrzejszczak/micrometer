@@ -57,7 +57,7 @@ public interface Recording<E extends Event, R extends Recording<E, R>> {
 	 * recording
 	 * @return this
 	 */
-	R highCardinalityName(String highCardinalityName);
+	R setHighCardinalityName(String highCardinalityName);
 
 	/**
 	 * The {@link Tag Tags} added to this recording.
