@@ -25,8 +25,14 @@ public interface Tag extends Comparable<Tag> {
 
     String getValue();
 
+    Cardinality getCardinality();
+
     static Tag of(String key, String value) {
-        return new ImmutableTag(key, value);
+        return Tag.of(key, value, Cardinality.LOW); // TODO: or HIGH?
+    }
+
+    static Tag of(String key, String value, Cardinality cardinality) {
+        return new ImmutableTag(key, value, cardinality);
     }
 
     @Override
