@@ -17,6 +17,13 @@ package io.micrometer.core.instrument;
 
 import io.micrometer.core.annotation.Incubating;
 import io.micrometer.core.annotation.Timed;
+import io.micrometer.core.event.Recording;
+import io.micrometer.core.event.interval.IntervalEvent;
+import io.micrometer.core.event.interval.IntervalRecording;
+import io.micrometer.core.event.interval.NoOpIntervalRecording;
+import io.micrometer.core.event.interval.SimpleIntervalRecording;
+import io.micrometer.core.event.listener.RecordingListener;
+import io.micrometer.core.event.listener.composite.CompositeContext;
 import io.micrometer.core.instrument.distribution.CountAtBucket;
 import io.micrometer.core.instrument.distribution.HistogramSupport;
 import io.micrometer.core.instrument.distribution.ValueAtPercentile;
@@ -38,34 +45,17 @@ import java.util.function.Supplier;
  * @author Oleksii Bondar
  */
 public interface Timer extends Meter, HistogramSupport {
-    /**
-     * Start a timing sample using the {@link Clock#SYSTEM System clock}.
-     *
-     * @return A timing sample with start time recorded.
-     * @since 1.1.0
-     */
-    static Sample start() {
-        return start(Clock.SYSTEM);
+
+    static Sample start(IntervalEvent event, MeterRegistry registry) {
+        return sample(event, registry).start();
     }
 
-    /**
-     * Start a timing sample.
-     *
-     * @param registry A meter registry whose clock is to be used
-     * @return A timing sample with start time recorded.
-     */
+    static Sample sample(IntervalEvent event, MeterRegistry registry) {
+        return new Sample(event, registry);
+    }
+
     static Sample start(MeterRegistry registry) {
-        return start(registry.config().clock());
-    }
-
-    /**
-     * Start a timing sample.
-     *
-     * @param clock a clock to be used
-     * @return A timing sample with start time recorded.
-     */
-    static Sample start(Clock clock) {
-        return new Sample(clock);
+        return null; // nope
     }
 
     static Builder builder(String name) {
@@ -259,29 +249,112 @@ public interface Timer extends Meter, HistogramSupport {
      */
     TimeUnit baseTimeUnit();
 
-    /**
-     * Maintains state on the clock's start position for a latency sample. Complete the timing
-     * by calling {@link Sample#stop(Timer)}. Note how the {@link Timer} isn't provided until the
-     * sample is stopped, allowing you to determine the timer's tags at the last minute.
-     */
-    class Sample {
-        private final long startTime;
-        private final Clock clock;
+    class Sample implements Recording<IntervalEvent, Sample>, AutoCloseable {
+        private static final IntervalRecording NOOP_RECORDING = new NoOpIntervalRecording();
+        private final IntervalRecording recording;
 
-        Sample(Clock clock) {
-            this.clock = clock;
-            this.startTime = clock.monotonicTime();
+        Sample(IntervalEvent event, MeterRegistry registry) {
+            RecordingListener<CompositeContext> listener = registry.config().recordingListener();
+            if (listener != null) {
+                recording = new SimpleIntervalRecording(event, listener, registry.config().clock());
+            }
+            else {
+                recording = NOOP_RECORDING;
+            }
         }
 
-        /**
-         * Records the duration of the operation.
-         *
-         * @param timer The timer to record the sample to.
-         * @return The total duration of the sample in nanoseconds
-         */
+        @Override
+        public IntervalEvent getEvent() {
+            return recording.getEvent();
+        }
+
+        @Override
+        public String getHighCardinalityName() {
+            return recording.getHighCardinalityName();
+        }
+
+        @Override
+        public Sample highCardinalityName(String highCardinalityName) {
+            recording.highCardinalityName(highCardinalityName);
+            return this;
+        }
+
+        public Duration getDuration() {
+            return recording.getDuration();
+        }
+
+        public long getStartNanos() {
+            return recording.getStartNanos();
+        }
+
+        public Sample start() {
+            recording.start();
+            return this;
+        }
+
+        public Sample start(long wallTime, long monotonicTime) {
+            recording.start(wallTime, monotonicTime);
+            return this;
+        }
+
+        public long getStopNanos() {
+            return recording.getStopNanos();
+        }
+
+        public long getStartWallTime() {
+            return recording.getStartWallTime();
+        }
+
+        public void stop() {
+            recording.stop();
+        }
+
+        public void stop(long monotonicTime) {
+            recording.stop(monotonicTime);
+        }
+
+        public Sample restore() {
+            recording.restore();
+            return this;
+        }
+
+        @Override
+        public Iterable<Tag> getTags() {
+            return recording.getTags();
+        }
+
+        public Sample tag(Tag tag) {
+            recording.tag(tag);
+            return this;
+        }
+
+        @Nullable
+        public Throwable getError() {
+            return recording.getError();
+        }
+
+        public Sample error(Throwable error) {
+            recording.error(error);
+            return this;
+        }
+
+        public <T> T getContext(RecordingListener<T> listener) {
+            return recording.getContext(listener);
+        }
+
+        @Override
+        public String toString() {
+            return recording.toString();
+        }
+
+        @Override
+        public void close() throws Exception {
+            recording.close();
+        }
+
         public long stop(Timer timer) {
-            long durationNs = clock.monotonicTime() - startTime;
-            timer.record(durationNs, TimeUnit.NANOSECONDS);
+            long durationNs = getDuration().toNanos();
+            timer.record(durationNs, TimeUnit.NANOSECONDS); // nope
             return durationNs;
         }
     }

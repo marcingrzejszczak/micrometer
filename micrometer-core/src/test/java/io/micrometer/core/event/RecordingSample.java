@@ -8,18 +8,22 @@ import io.micrometer.core.event.listener.RecordingListener;
 import io.micrometer.core.event.listener.composite.AllMatchingCompositeRecordingListener;
 import io.micrometer.core.event.listener.composite.CompositeContext;
 import io.micrometer.core.instrument.Cardinality;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
+import io.micrometer.core.instrument.Timer;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.junit.jupiter.api.Test;
 
 class RecordingSample {
 
     @Test
-    void doesItWork() throws InterruptedException {
+    void doesItWorkWithRecorder() throws InterruptedException {
         RecordingListener<CompositeContext> listener = new AllMatchingCompositeRecordingListener(
                 new SoutRecordingListenerWoContext(),
                 new SoutRecordingListenerWContext()
         );
         Recorder recorder = new SimpleRecorder(listener);
+
         IntervalRecording recording = recorder.recordingFor(() -> "testEvent")
                 .tag(Tag.of("a", "b"))
                 .tag(Tag.of("c", UUID.randomUUID().toString(), Cardinality.HIGH))
@@ -27,8 +31,26 @@ class RecordingSample {
 
         Thread.sleep(500);
         recording.error(new IOException("simulated"));
-
         recording.stop();
+    }
+
+    @Test
+    void doesItWorkWithTimerSample() throws InterruptedException {
+        RecordingListener<CompositeContext> listener = new AllMatchingCompositeRecordingListener(
+                new SoutRecordingListenerWoContext(),
+                new SoutRecordingListenerWContext()
+        );
+        MeterRegistry registry = new SimpleMeterRegistry();
+        registry.config().recordingListener(listener);
+
+        Timer.Sample sample = Timer.sample(() -> "testEvent", registry)
+                .tag(Tag.of("a", "b"))
+                .tag(Tag.of("c", UUID.randomUUID().toString(), Cardinality.HIGH))
+                .start();
+
+        Thread.sleep(500);
+        sample.error(new IOException("simulated"));
+        sample.stop();
     }
 
 

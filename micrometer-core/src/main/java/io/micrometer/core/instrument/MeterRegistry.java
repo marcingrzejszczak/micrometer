@@ -16,6 +16,8 @@
 package io.micrometer.core.instrument;
 
 import io.micrometer.core.annotation.Incubating;
+import io.micrometer.core.event.listener.RecordingListener;
+import io.micrometer.core.event.listener.composite.CompositeContext;
 import io.micrometer.core.instrument.Meter.Id;
 import io.micrometer.core.instrument.config.MeterFilter;
 import io.micrometer.core.instrument.config.MeterFilterReply;
@@ -36,6 +38,7 @@ import io.micrometer.core.instrument.search.MeterNotFoundException;
 import io.micrometer.core.instrument.search.RequiredSearch;
 import io.micrometer.core.instrument.search.Search;
 import io.micrometer.core.instrument.util.TimeUtils;
+import io.micrometer.core.lang.NonNull;
 import io.micrometer.core.lang.Nullable;
 
 import java.util.ArrayList;
@@ -108,6 +111,8 @@ public abstract class MeterRegistry {
      * names when shipping metrics to hierarchical backends such as Graphite.
      */
     private NamingConvention namingConvention = NamingConvention.snakeCase;
+
+    private RecordingListener<CompositeContext> recordingListener;
 
     protected MeterRegistry(Clock clock) {
         requireNonNull(clock);
@@ -843,6 +848,15 @@ public abstract class MeterRegistry {
          */
         public PauseDetector pauseDetector() {
             return pauseDetector;
+        }
+
+        @Nullable
+        public RecordingListener<CompositeContext> recordingListener() {
+            return recordingListener;
+        }
+
+        public void recordingListener(@NonNull RecordingListener<CompositeContext> listener) {
+            recordingListener = listener;
         }
     }
 
