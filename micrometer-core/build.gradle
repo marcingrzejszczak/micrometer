@@ -3,6 +3,7 @@ plugins {
 }
 
 dependencies {
+    api project(':micrometer-api')
     // TODO(anuraaga): HdrHistogram is exposed in the micrometer API but probably shouldn't be
     api 'org.hdrhistogram:HdrHistogram'
     implementation('org.latencyutils:LatencyUtils') {

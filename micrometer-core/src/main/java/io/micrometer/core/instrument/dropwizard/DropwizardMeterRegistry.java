@@ -15,10 +15,28 @@
  */
 package io.micrometer.core.instrument.dropwizard;
 
+import java.lang.ref.WeakReference;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.ToDoubleFunction;
+import java.util.function.ToLongFunction;
+
 import com.codahale.metrics.ExponentiallyDecayingReservoir;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.MetricRegistry;
-import io.micrometer.core.instrument.*;
+
+import io.micrometer.api.instrument.Clock;
+import io.micrometer.api.lang.Nullable;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.DistributionSummary;
+import io.micrometer.core.instrument.FunctionCounter;
+import io.micrometer.core.instrument.FunctionTimer;
+import io.micrometer.core.instrument.LongTaskTimer;
+import io.micrometer.core.instrument.Measurement;
+import io.micrometer.core.instrument.Meter;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Statistic;
+import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.config.NamingConvention;
 import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
 import io.micrometer.core.instrument.distribution.HistogramGauges;
@@ -26,14 +44,7 @@ import io.micrometer.core.instrument.distribution.pause.PauseDetector;
 import io.micrometer.core.instrument.internal.DefaultLongTaskTimer;
 import io.micrometer.core.instrument.internal.DefaultMeter;
 import io.micrometer.core.instrument.util.HierarchicalNameMapper;
-import io.micrometer.core.lang.Nullable;
 import io.micrometer.core.util.internal.logging.WarnThenDebugLogger;
-
-import java.lang.ref.WeakReference;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.ToDoubleFunction;
-import java.util.function.ToLongFunction;
 
 /**
  * Dropwizard {@link MeterRegistry}.

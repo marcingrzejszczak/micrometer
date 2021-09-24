@@ -15,14 +15,15 @@
  */
 package io.micrometer.core.instrument;
 
-import io.micrometer.core.instrument.composite.CompositeMeterRegistry;
-import io.micrometer.core.lang.Nullable;
-
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToLongFunction;
+
+import io.micrometer.api.instrument.Tag;
+import io.micrometer.api.lang.Nullable;
+import io.micrometer.core.instrument.composite.CompositeMeterRegistry;
 
 /**
  * Generator of meters bound to a static global composite registry. For use especially

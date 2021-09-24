@@ -16,11 +16,11 @@
 package io.micrometer.core.instrument.dropwizard;
 
 import io.micrometer.core.instrument.AbstractDistributionSummary;
-import io.micrometer.core.instrument.Clock;
+import io.micrometer.api.instrument.Clock;
 import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
 import io.micrometer.core.instrument.distribution.TimeWindowMax;
 import io.micrometer.core.instrument.util.MeterEquivalence;
-import io.micrometer.core.lang.Nullable;
+import io.micrometer.api.lang.Nullable;
 
 import java.util.concurrent.atomic.DoubleAdder;
 

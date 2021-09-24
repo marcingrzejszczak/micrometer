@@ -18,7 +18,7 @@ package io.micrometer.core.instrument.composite;
 import io.micrometer.core.instrument.AbstractMeter;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.lang.Nullable;
+import io.micrometer.api.lang.Nullable;
 
 import java.util.Collections;
 import java.util.IdentityHashMap;

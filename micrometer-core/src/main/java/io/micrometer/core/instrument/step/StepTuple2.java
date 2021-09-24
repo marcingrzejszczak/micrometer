@@ -15,7 +15,7 @@
  */
 package io.micrometer.core.instrument.step;
 
-import io.micrometer.core.instrument.Clock;
+import io.micrometer.api.instrument.Clock;
 
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;

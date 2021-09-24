@@ -17,6 +17,7 @@ package io.micrometer.newrelic;
 
 import com.newrelic.api.agent.Agent;
 import com.newrelic.api.agent.NewRelic;
+import io.micrometer.api.instrument.*;
 import io.micrometer.core.instrument.*;
 import io.micrometer.core.instrument.config.NamingConvention;
 import org.slf4j.Logger;

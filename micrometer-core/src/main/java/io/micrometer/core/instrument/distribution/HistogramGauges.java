@@ -15,14 +15,21 @@
  */
 package io.micrometer.core.instrument.distribution;
 
-import io.micrometer.core.annotation.Incubating;
-import io.micrometer.core.instrument.*;
-import io.micrometer.core.instrument.util.DoubleFormat;
-
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
+
+import io.micrometer.api.annotation.Incubating;
+import io.micrometer.api.instrument.Tag;
+import io.micrometer.api.instrument.Tags;
+import io.micrometer.core.instrument.DistributionSummary;
+import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.LongTaskTimer;
+import io.micrometer.core.instrument.Meter;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
+import io.micrometer.core.instrument.util.DoubleFormat;
 
 @Incubating(since = "1.0.3")
 public class HistogramGauges {

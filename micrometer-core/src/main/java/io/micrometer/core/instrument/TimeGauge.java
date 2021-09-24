@@ -15,13 +15,15 @@
  */
 package io.micrometer.core.instrument;
 
-import io.micrometer.core.annotation.Incubating;
-import io.micrometer.core.instrument.util.TimeUtils;
-import io.micrometer.core.lang.Nullable;
-
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
+
+import io.micrometer.api.annotation.Incubating;
+import io.micrometer.api.instrument.Tag;
+import io.micrometer.api.instrument.Tags;
+import io.micrometer.api.lang.Nullable;
+import io.micrometer.core.instrument.util.TimeUtils;
 
 /**
  * A specialized gauge that tracks a time value, to be scaled to the base unit of time expected by each registry implementation.

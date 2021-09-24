@@ -16,7 +16,7 @@
 package io.micrometer.core.instrument.step;
 
 import io.micrometer.core.instrument.AbstractDistributionSummary;
-import io.micrometer.core.instrument.Clock;
+import io.micrometer.api.instrument.Clock;
 import io.micrometer.core.instrument.Measurement;
 import io.micrometer.core.instrument.Statistic;
 import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;

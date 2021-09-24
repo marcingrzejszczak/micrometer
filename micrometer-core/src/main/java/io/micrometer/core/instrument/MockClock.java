@@ -15,10 +15,11 @@
  */
 package io.micrometer.core.instrument;
 
-import io.micrometer.core.instrument.util.TimeUtils;
-
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
+
+import io.micrometer.api.instrument.Clock;
+import io.micrometer.core.instrument.util.TimeUtils;
 
 public class MockClock implements Clock {
     // has to be non-zero to prevent divide-by-zeroes and other weird math results based on the clock

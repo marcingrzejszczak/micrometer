@@ -15,12 +15,6 @@
  */
 package io.micrometer.core.instrument.composite;
 
-import io.micrometer.core.instrument.*;
-import io.micrometer.core.instrument.config.NamingConvention;
-import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
-import io.micrometer.core.instrument.distribution.pause.PauseDetector;
-import io.micrometer.core.lang.Nullable;
-
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Set;
@@ -28,6 +22,23 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToLongFunction;
+
+import io.micrometer.api.instrument.Clock;
+import io.micrometer.api.lang.Nullable;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.DistributionSummary;
+import io.micrometer.core.instrument.FunctionCounter;
+import io.micrometer.core.instrument.FunctionTimer;
+import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.LongTaskTimer;
+import io.micrometer.core.instrument.Measurement;
+import io.micrometer.core.instrument.Meter;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.TimeGauge;
+import io.micrometer.core.instrument.Timer;
+import io.micrometer.core.instrument.config.NamingConvention;
+import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
+import io.micrometer.core.instrument.distribution.pause.PauseDetector;
 
 /**
  * The clock of the composite effectively overrides the clocks of the registries it manages without actually

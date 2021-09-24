@@ -15,25 +15,29 @@
  */
 package io.micrometer.core.tck;
 
-import io.micrometer.core.Issue;
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Timer;
-import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+import static io.micrometer.core.instrument.MockClock.clock;
+import static io.micrometer.core.instrument.util.TimeUtils.millisToUnit;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
+
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.time.Duration;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
-
-import static io.micrometer.core.instrument.MockClock.clock;
-import static io.micrometer.core.instrument.util.TimeUtils.millisToUnit;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import io.micrometer.api.instrument.Sample;
+import io.micrometer.core.Issue;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
+import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
 /**
  * Tests for {@link Timer}
@@ -178,10 +182,10 @@ interface TimerTest {
     @DisplayName("record with stateful Sample instance")
     default void recordWithSample(MeterRegistry registry) {
         Timer timer = registry.timer("myTimer");
-        Timer.Sample sample = Timer.start(registry);
+        Sample sample = Sample.start(() -> "myTimer", registry.config().recorder());
 
         clock(registry).add(10, TimeUnit.NANOSECONDS);
-        sample.stop(timer);
+        sample.stop();
         clock(registry).add(step());
 
         assertAll(() -> assertEquals(1L, timer.count()),

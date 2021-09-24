@@ -16,14 +16,14 @@
 
 package io.micrometer.core.instrument.listener.tracing;
 
-import io.micrometer.core.event.Recording;
-import io.micrometer.core.event.interval.IntervalEvent;
-import io.micrometer.core.event.interval.IntervalHttpClientEvent;
-import io.micrometer.core.event.listener.RecordingListener;
-import io.micrometer.core.instrument.tracing.Tracer;
-import io.micrometer.core.instrument.tracing.http.HttpClientHandler;
-import io.micrometer.core.instrument.transport.http.HttpClientRequest;
-import io.micrometer.core.instrument.transport.http.HttpClientResponse;
+import io.micrometer.api.event.Recording;
+import io.micrometer.api.event.interval.IntervalEvent;
+import io.micrometer.api.event.interval.IntervalHttpClientEvent;
+import io.micrometer.api.event.listener.RecordingListener;
+import io.micrometer.api.instrument.tracing.Tracer;
+import io.micrometer.api.instrument.tracing.http.HttpClientHandler;
+import io.micrometer.api.instrument.transport.http.HttpClientRequest;
+import io.micrometer.api.instrument.transport.http.HttpClientResponse;
 
 /**
  * {@link RecordingListener} that uses the Tracing API to record events for HTTP client

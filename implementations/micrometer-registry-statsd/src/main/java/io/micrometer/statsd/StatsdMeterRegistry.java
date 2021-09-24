@@ -15,7 +15,8 @@
  */
 package io.micrometer.statsd;
 
-import io.micrometer.core.annotation.Incubating;
+import io.micrometer.api.annotation.Incubating;
+import io.micrometer.api.instrument.*;
 import io.micrometer.core.instrument.*;
 import io.micrometer.core.instrument.config.NamingConvention;
 import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
@@ -23,8 +24,8 @@ import io.micrometer.core.instrument.distribution.HistogramGauges;
 import io.micrometer.core.instrument.distribution.pause.PauseDetector;
 import io.micrometer.core.instrument.internal.DefaultMeter;
 import io.micrometer.core.instrument.util.HierarchicalNameMapper;
-import io.micrometer.core.lang.Nullable;
-import io.micrometer.core.util.internal.logging.WarnThenDebugLogger;
+import io.micrometer.api.lang.Nullable;
+import io.micrometer.api.util.internal.logging.WarnThenDebugLogger;
 import io.micrometer.statsd.internal.*;
 import io.netty.channel.unix.DomainSocketAddress;
 import io.netty.util.AttributeKey;

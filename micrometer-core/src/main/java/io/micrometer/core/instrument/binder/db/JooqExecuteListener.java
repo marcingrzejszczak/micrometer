@@ -15,17 +15,18 @@
  */
 package io.micrometer.core.instrument.binder.db;
 
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Tag;
-import io.micrometer.core.instrument.Timer;
-import io.micrometer.core.instrument.util.StringUtils;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
+
 import org.jooq.ExecuteContext;
 import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DefaultExecuteListener;
 
-import java.util.function.Supplier;
+import io.micrometer.api.instrument.Sample;
+import io.micrometer.api.instrument.Tag;
+import io.micrometer.api.instrument.util.StringUtils;
+import io.micrometer.core.instrument.MeterRegistry;
 
 class JooqExecuteListener extends DefaultExecuteListener {
     private final MeterRegistry registry;
@@ -33,7 +34,7 @@ class JooqExecuteListener extends DefaultExecuteListener {
     private final Supplier<Iterable<Tag>> queryTagsSupplier;
 
     private final Object sampleLock = new Object();
-    private final Map<ExecuteContext, Timer.Sample> sampleByExecuteContext = new HashMap<>();
+    private final Map<ExecuteContext, Sample> sampleByExecuteContext = new HashMap<>();
 
     public JooqExecuteListener(MeterRegistry registry, Iterable<Tag> tags, Supplier<Iterable<Tag>> queryTags) {
         this.registry = registry;
@@ -52,7 +53,7 @@ class JooqExecuteListener extends DefaultExecuteListener {
     }
 
     private void startTimer(ExecuteContext ctx) {
-        Timer.Sample started = Timer.start(registry);
+        Sample started = Sample.start(registry.config().recorder());
         synchronized (sampleLock) {
             sampleByExecuteContext.put(ctx, started);
         }
@@ -72,7 +73,7 @@ class JooqExecuteListener extends DefaultExecuteListener {
         Iterable<Tag> queryTags = queryTagsSupplier.get();
         if (queryTags == null) return;
 
-        Timer.Sample sample;
+        Sample sample;
         synchronized (sampleLock) {
             sample = sampleByExecuteContext.remove(ctx);
         }
@@ -97,13 +98,13 @@ class JooqExecuteListener extends DefaultExecuteListener {
         }
 
         //noinspection unchecked
-        sample.stop(Timer.builder("jooq.query")
-                .description("Execution time of a SQL query performed with JOOQ")
+        sample.setLowCardinalityName("jooq.query")
+                .setDescription("Execution time of a SQL query performed with JOOQ")
                 .tags(queryTags)
                 .tag("type", ctx.type().name().toLowerCase())
                 .tag("exception", exceptionName)
                 .tag("exception.subclass", exceptionSubclass)
                 .tags(tags)
-                .register(registry));
+                .stop();
     }
 }

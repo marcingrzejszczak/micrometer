@@ -15,6 +15,7 @@
  */
 package io.micrometer.appoptics;
 
+import io.micrometer.api.instrument.*;
 import io.micrometer.core.instrument.*;
 import io.micrometer.core.instrument.config.MeterFilter;
 import io.micrometer.core.instrument.distribution.HistogramSnapshot;

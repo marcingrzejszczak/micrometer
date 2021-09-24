@@ -15,10 +15,7 @@
  */
 package io.micrometer.core.instrument;
 
-import io.micrometer.core.annotation.Incubating;
-import io.micrometer.core.instrument.config.NamingConvention;
-import io.micrometer.core.instrument.distribution.HistogramGauges;
-import io.micrometer.core.lang.Nullable;
+import static java.util.Collections.singletonList;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,7 +26,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static java.util.Collections.singletonList;
+import io.micrometer.api.annotation.Incubating;
+import io.micrometer.api.instrument.Tag;
+import io.micrometer.api.instrument.Tags;
+import io.micrometer.api.lang.Nullable;
+import io.micrometer.core.instrument.config.NamingConvention;
+import io.micrometer.core.instrument.distribution.HistogramGauges;
 
 /**
  * A named and dimensioned producer of one or more measurements.

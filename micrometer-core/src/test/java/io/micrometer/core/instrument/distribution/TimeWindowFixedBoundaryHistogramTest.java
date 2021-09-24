@@ -15,7 +15,7 @@
  */
 package io.micrometer.core.instrument.distribution;
 
-import io.micrometer.core.instrument.Clock;
+import io.micrometer.api.instrument.Clock;
 import io.micrometer.core.instrument.MockClock;
 import org.junit.jupiter.api.Test;
 

@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.ToDoubleFunction;
 
 /**
- * {@link io.micrometer.core.instrument.FunctionCounter} for StatsD.
+ * {@link io.micrometer.api.instrument.FunctionCounter} for StatsD.
  *
  * @param <T> the type of the state object from which the counter value is extracted
  *

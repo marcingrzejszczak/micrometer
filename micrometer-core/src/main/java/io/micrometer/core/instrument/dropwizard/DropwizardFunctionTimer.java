@@ -18,7 +18,7 @@ package io.micrometer.core.instrument.dropwizard;
 import com.codahale.metrics.Snapshot;
 import com.codahale.metrics.Timer;
 import io.micrometer.core.instrument.AbstractMeter;
-import io.micrometer.core.instrument.Clock;
+import io.micrometer.api.instrument.Clock;
 import io.micrometer.core.instrument.FunctionTimer;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.util.TimeUtils;

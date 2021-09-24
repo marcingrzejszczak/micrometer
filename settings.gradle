@@ -43,3 +43,4 @@ include 'micrometer-test'
 }
 
 include 'micrometer-bom'
+include 'micrometer-api'

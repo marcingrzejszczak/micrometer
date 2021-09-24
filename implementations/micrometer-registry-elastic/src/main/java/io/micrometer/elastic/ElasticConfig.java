@@ -15,16 +15,19 @@
  */
 package io.micrometer.elastic;
 
-import io.micrometer.core.instrument.config.validate.InvalidReason;
-import io.micrometer.core.instrument.config.validate.Validated;
-import io.micrometer.core.instrument.step.StepRegistryConfig;
-import io.micrometer.core.lang.Nullable;
+import static io.micrometer.core.instrument.config.MeterRegistryConfigValidator.checkAll;
+import static io.micrometer.core.instrument.config.MeterRegistryConfigValidator.checkRequired;
+import static io.micrometer.core.instrument.config.validate.PropertyValidator.getBoolean;
+import static io.micrometer.core.instrument.config.validate.PropertyValidator.getSecret;
+import static io.micrometer.core.instrument.config.validate.PropertyValidator.getString;
+import static io.micrometer.core.instrument.config.validate.PropertyValidator.getUrlString;
 
 import java.time.format.DateTimeFormatter;
 
-import static io.micrometer.core.instrument.config.MeterRegistryConfigValidator.checkAll;
-import static io.micrometer.core.instrument.config.MeterRegistryConfigValidator.checkRequired;
-import static io.micrometer.core.instrument.config.validate.PropertyValidator.*;
+import io.micrometer.api.lang.Nullable;
+import io.micrometer.core.instrument.config.validate.InvalidReason;
+import io.micrometer.core.instrument.config.validate.Validated;
+import io.micrometer.core.instrument.step.StepRegistryConfig;
 
 /**
  * Configuration for {@link ElasticMeterRegistry}.
@@ -45,6 +48,7 @@ public interface ElasticConfig extends StepRegistryConfig {
      * @param key Key to look up in the config.
      * @return Value for the key or null if no key is present.
      */
+    @Override
     @Nullable
     String get(String key);
 
@@ -53,6 +57,7 @@ public interface ElasticConfig extends StepRegistryConfig {
      *
      * @return property prefix
      */
+    @Override
     default String prefix() {
         return "elastic";
     }

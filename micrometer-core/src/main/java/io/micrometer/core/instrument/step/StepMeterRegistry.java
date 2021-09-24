@@ -15,7 +15,21 @@
  */
 package io.micrometer.core.instrument.step;
 
-import io.micrometer.core.instrument.*;
+import java.util.concurrent.TimeUnit;
+import java.util.function.ToDoubleFunction;
+import java.util.function.ToLongFunction;
+
+import io.micrometer.api.instrument.Clock;
+import io.micrometer.api.lang.Nullable;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.DistributionSummary;
+import io.micrometer.core.instrument.FunctionCounter;
+import io.micrometer.core.instrument.FunctionTimer;
+import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.LongTaskTimer;
+import io.micrometer.core.instrument.Measurement;
+import io.micrometer.core.instrument.Meter;
+import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
 import io.micrometer.core.instrument.distribution.HistogramGauges;
 import io.micrometer.core.instrument.distribution.pause.PauseDetector;
@@ -23,11 +37,6 @@ import io.micrometer.core.instrument.internal.DefaultGauge;
 import io.micrometer.core.instrument.internal.DefaultLongTaskTimer;
 import io.micrometer.core.instrument.internal.DefaultMeter;
 import io.micrometer.core.instrument.push.PushMeterRegistry;
-import io.micrometer.core.lang.Nullable;
-
-import java.util.concurrent.TimeUnit;
-import java.util.function.ToDoubleFunction;
-import java.util.function.ToLongFunction;
 
 /**
  * Registry that step-normalizes counts and sums to a rate/second over the publishing interval.

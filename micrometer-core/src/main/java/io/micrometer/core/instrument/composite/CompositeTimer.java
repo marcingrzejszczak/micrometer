@@ -15,7 +15,7 @@
  */
 package io.micrometer.core.instrument.composite;
 
-import io.micrometer.core.instrument.Clock;
+import io.micrometer.api.instrument.Clock;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;

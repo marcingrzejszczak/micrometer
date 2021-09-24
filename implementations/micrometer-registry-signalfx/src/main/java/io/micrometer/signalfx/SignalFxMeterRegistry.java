@@ -23,12 +23,13 @@ import com.signalfx.metrics.connection.HttpEventProtobufReceiverFactory;
 import com.signalfx.metrics.errorhandler.OnSendErrorHandler;
 import com.signalfx.metrics.flush.AggregateMetricSender;
 import com.signalfx.metrics.protobuf.SignalFxProtocolBuffers;
+import io.micrometer.api.instrument.*;
 import io.micrometer.core.instrument.*;
 import io.micrometer.core.instrument.config.NamingConvention;
 import io.micrometer.core.instrument.step.StepMeterRegistry;
 import io.micrometer.core.instrument.util.MeterPartition;
 import io.micrometer.core.instrument.util.NamedThreadFactory;
-import io.micrometer.core.lang.Nullable;
+import io.micrometer.api.lang.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

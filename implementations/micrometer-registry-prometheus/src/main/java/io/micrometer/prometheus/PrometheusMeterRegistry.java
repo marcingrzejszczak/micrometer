@@ -15,18 +15,8 @@
  */
 package io.micrometer.prometheus;
 
-import io.micrometer.core.instrument.*;
-import io.micrometer.core.instrument.cumulative.CumulativeFunctionCounter;
-import io.micrometer.core.instrument.cumulative.CumulativeFunctionTimer;
-import io.micrometer.core.instrument.distribution.*;
-import io.micrometer.core.instrument.distribution.pause.PauseDetector;
-import io.micrometer.core.instrument.internal.CumulativeHistogramLongTaskTimer;
-import io.micrometer.core.instrument.internal.DefaultGauge;
-import io.micrometer.core.instrument.internal.DefaultMeter;
-import io.micrometer.core.lang.Nullable;
-import io.prometheus.client.Collector;
-import io.prometheus.client.CollectorRegistry;
-import io.prometheus.client.exporter.common.TextFormat;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.StreamSupport.stream;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -44,9 +34,33 @@ import java.util.function.ToDoubleFunction;
 import java.util.function.ToLongFunction;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.StreamSupport.stream;
+import io.micrometer.api.instrument.Clock;
+import io.micrometer.api.instrument.Tag;
+import io.micrometer.api.lang.Nullable;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.DistributionSummary;
+import io.micrometer.core.instrument.FunctionCounter;
+import io.micrometer.core.instrument.FunctionTimer;
+import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.LongTaskTimer;
+import io.micrometer.core.instrument.Measurement;
+import io.micrometer.core.instrument.Meter;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.cumulative.CumulativeFunctionCounter;
+import io.micrometer.core.instrument.cumulative.CumulativeFunctionTimer;
+import io.micrometer.core.instrument.distribution.CountAtBucket;
+import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
+import io.micrometer.core.instrument.distribution.FixedBoundaryVictoriaMetricsHistogram;
+import io.micrometer.core.instrument.distribution.HistogramSnapshot;
+import io.micrometer.core.instrument.distribution.HistogramSupport;
+import io.micrometer.core.instrument.distribution.ValueAtPercentile;
+import io.micrometer.core.instrument.distribution.pause.PauseDetector;
+import io.micrometer.core.instrument.internal.CumulativeHistogramLongTaskTimer;
+import io.micrometer.core.instrument.internal.DefaultGauge;
+import io.micrometer.core.instrument.internal.DefaultMeter;
+import io.prometheus.client.Collector;
+import io.prometheus.client.CollectorRegistry;
+import io.prometheus.client.exporter.common.TextFormat;
 
 /**
  * {@link MeterRegistry} for Prometheus.
@@ -272,7 +286,8 @@ public class PrometheusMeterRegistry extends MeterRegistry {
     }
 
     @Override
-    protected <T> io.micrometer.core.instrument.Gauge newGauge(Meter.Id id, @Nullable T obj, ToDoubleFunction<T> valueFunction) {
+    protected <T> io.micrometer.core.instrument.Gauge newGauge(Meter.Id id, @Nullable T obj,
+            ToDoubleFunction<T> valueFunction) {
         Gauge gauge = new DefaultGauge<>(id, obj, valueFunction);
         applyToCollector(id, (collector) -> {
             List<String> tagValues = tagValues(id);

@@ -15,13 +15,15 @@
  */
 package io.micrometer.core.instrument;
 
-import io.micrometer.core.annotation.Incubating;
-import io.micrometer.core.instrument.distribution.HistogramGauges;
-import io.micrometer.core.lang.Nullable;
-
 import java.util.Collections;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
+
+import io.micrometer.api.annotation.Incubating;
+import io.micrometer.api.instrument.Tag;
+import io.micrometer.api.instrument.Tags;
+import io.micrometer.api.lang.Nullable;
+import io.micrometer.core.instrument.distribution.HistogramGauges;
 
 /**
  * A gauge tracks a value that may go up or down. The value that is published for gauges is

@@ -18,7 +18,7 @@ package io.micrometer.core.instrument.step;
 import io.micrometer.core.instrument.FunctionCounter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.MockClock;
-import io.micrometer.core.instrument.Tags;
+import io.micrometer.api.instrument.Tags;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.TimeUnit;

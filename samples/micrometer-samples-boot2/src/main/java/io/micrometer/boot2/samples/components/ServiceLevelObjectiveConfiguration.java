@@ -16,7 +16,7 @@
 package io.micrometer.boot2.samples.components;
 
 import io.micrometer.core.instrument.Meter.Type;
-import io.micrometer.core.instrument.Tag;
+import io.micrometer.api.instrument.Tag;
 import io.micrometer.core.instrument.binder.BaseUnits;
 import io.micrometer.core.instrument.config.NamingConvention;
 import io.micrometer.health.HealthConfig;

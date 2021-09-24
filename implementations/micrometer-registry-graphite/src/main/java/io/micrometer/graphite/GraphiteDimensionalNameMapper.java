@@ -16,7 +16,7 @@
 package io.micrometer.graphite;
 
 import io.micrometer.core.instrument.Meter;
-import io.micrometer.core.instrument.Tag;
+import io.micrometer.api.instrument.Tag;
 import io.micrometer.core.instrument.config.NamingConvention;
 import io.micrometer.core.instrument.util.HierarchicalNameMapper;
 

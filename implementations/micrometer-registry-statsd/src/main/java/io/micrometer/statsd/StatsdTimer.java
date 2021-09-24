@@ -15,8 +15,8 @@
  */
 package io.micrometer.statsd;
 
-import io.micrometer.core.instrument.AbstractTimer;
-import io.micrometer.core.instrument.Clock;
+import io.micrometer.api.instrument.AbstractTimer;
+import io.micrometer.api.instrument.Clock;
 import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
 import io.micrometer.core.instrument.distribution.pause.PauseDetector;
 import io.micrometer.core.instrument.step.StepDouble;

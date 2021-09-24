@@ -18,9 +18,9 @@ package io.micrometer.dynatrace.v1;
 
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.config.NamingConvention;
-import io.micrometer.core.instrument.util.StringUtils;
-import io.micrometer.core.lang.Nullable;
-import io.micrometer.core.util.internal.logging.WarnThenDebugLogger;
+import io.micrometer.api.instrument.util.StringUtils;
+import io.micrometer.api.lang.Nullable;
+import io.micrometer.api.util.internal.logging.WarnThenDebugLogger;
 
 import java.util.regex.Pattern;
 

@@ -18,7 +18,7 @@ package io.micrometer.core.instrument.step;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;
 
-import io.micrometer.core.instrument.Clock;
+import io.micrometer.api.instrument.Clock;
 
 /**
  * Tracks 'values' for periods (steps) of time.  The previous step's value is

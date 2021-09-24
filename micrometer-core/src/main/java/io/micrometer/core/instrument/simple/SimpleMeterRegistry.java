@@ -15,20 +15,38 @@
  */
 package io.micrometer.core.instrument.simple;
 
-import io.micrometer.core.instrument.*;
-import io.micrometer.core.instrument.cumulative.*;
+import java.util.concurrent.TimeUnit;
+import java.util.function.ToDoubleFunction;
+import java.util.function.ToLongFunction;
+
+import io.micrometer.api.instrument.Clock;
+import io.micrometer.api.lang.Nullable;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.DistributionSummary;
+import io.micrometer.core.instrument.FunctionCounter;
+import io.micrometer.core.instrument.FunctionTimer;
+import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.LongTaskTimer;
+import io.micrometer.core.instrument.Measurement;
+import io.micrometer.core.instrument.Meter;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
+import io.micrometer.core.instrument.cumulative.CumulativeCounter;
+import io.micrometer.core.instrument.cumulative.CumulativeDistributionSummary;
+import io.micrometer.core.instrument.cumulative.CumulativeFunctionCounter;
+import io.micrometer.core.instrument.cumulative.CumulativeFunctionTimer;
+import io.micrometer.core.instrument.cumulative.CumulativeTimer;
 import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
 import io.micrometer.core.instrument.distribution.HistogramGauges;
 import io.micrometer.core.instrument.distribution.pause.PauseDetector;
 import io.micrometer.core.instrument.internal.DefaultGauge;
 import io.micrometer.core.instrument.internal.DefaultLongTaskTimer;
 import io.micrometer.core.instrument.internal.DefaultMeter;
-import io.micrometer.core.instrument.step.*;
-import io.micrometer.core.lang.Nullable;
-
-import java.util.concurrent.TimeUnit;
-import java.util.function.ToDoubleFunction;
-import java.util.function.ToLongFunction;
+import io.micrometer.core.instrument.step.StepCounter;
+import io.micrometer.core.instrument.step.StepDistributionSummary;
+import io.micrometer.core.instrument.step.StepFunctionCounter;
+import io.micrometer.core.instrument.step.StepFunctionTimer;
+import io.micrometer.core.instrument.step.StepTimer;
 
 /**
  * A minimal meter registry implementation primarily used for tests.

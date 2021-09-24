@@ -15,16 +15,16 @@
  */
 package io.micrometer.core.util.internal.logging;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
 import static io.micrometer.core.util.internal.logging.InternalLogLevel.DEBUG;
 import static io.micrometer.core.util.internal.logging.InternalLogLevel.ERROR;
 import static io.micrometer.core.util.internal.logging.InternalLogLevel.INFO;
 import static io.micrometer.core.util.internal.logging.InternalLogLevel.TRACE;
 import static io.micrometer.core.util.internal.logging.InternalLogLevel.WARN;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Simple implementation of {@link InternalLogger} that does not produce any output or delegate the work to another logger,

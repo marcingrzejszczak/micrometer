@@ -15,21 +15,26 @@
  */
 package io.micrometer.core.instrument;
 
+import static java.util.stream.StreamSupport.stream;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+
+import java.time.Duration;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.assertj.core.api.Condition;
+import org.junit.jupiter.api.Test;
+
+import io.micrometer.api.instrument.Tags;
+import io.micrometer.api.lang.Nullable;
 import io.micrometer.core.Issue;
 import io.micrometer.core.instrument.config.MeterFilter;
 import io.micrometer.core.instrument.config.MeterFilterReply;
 import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
-import io.micrometer.core.lang.Nullable;
-import org.assertj.core.api.Condition;
-import org.junit.jupiter.api.Test;
-
-import java.time.Duration;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static java.util.stream.StreamSupport.stream;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
 
 /**
  * Tests for {@link MeterFilter}.

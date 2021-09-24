@@ -15,6 +15,7 @@
  */
 package io.micrometer.cloudwatch2;
 
+import io.micrometer.api.instrument.*;
 import io.micrometer.core.instrument.*;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;

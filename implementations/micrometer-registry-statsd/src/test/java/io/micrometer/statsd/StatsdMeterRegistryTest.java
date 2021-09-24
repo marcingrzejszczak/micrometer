@@ -18,10 +18,11 @@ package io.micrometer.statsd;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import io.micrometer.core.Issue;
+import io.micrometer.api.instrument.*;
 import io.micrometer.core.instrument.*;
-import io.micrometer.core.instrument.binder.logging.LogbackMetrics;
+import io.micrometer.api.instrument.binder.logging.LogbackMetrics;
 import io.micrometer.core.instrument.config.NamingConvention;
-import io.micrometer.core.lang.Nullable;
+import io.micrometer.api.lang.Nullable;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -344,7 +345,7 @@ class StatsdMeterRegistryTest {
         registry = new StatsdMeterRegistry(configWithFlavor(StatsdFlavor.ETSY), clock);
         Timer.builder("my.timer").serviceLevelObjectives(Duration.ofMillis(1)).register(registry);
 
-        // A io.micrometer.core.instrument.search.MeterNotFoundException is thrown if the gauge isn't present
+        // A io.micrometer.api.instrument.search.MeterNotFoundException is thrown if the gauge isn't present
         registry.get("my.timer.histogram").tag("le", "+Inf").gauge();
     }
 
@@ -353,7 +354,7 @@ class StatsdMeterRegistryTest {
         registry = new StatsdMeterRegistry(configWithFlavor(StatsdFlavor.ETSY), clock);
         DistributionSummary summary = DistributionSummary.builder("my.distribution").serviceLevelObjectives(1.0).register(registry);
 
-        // A io.micrometer.core.instrument.search.MeterNotFoundException is thrown if the gauge isn't present
+        // A io.micrometer.api.instrument.search.MeterNotFoundException is thrown if the gauge isn't present
         registry.get("my.distribution.histogram").tag("le", "+Inf").gauge();
     }
 

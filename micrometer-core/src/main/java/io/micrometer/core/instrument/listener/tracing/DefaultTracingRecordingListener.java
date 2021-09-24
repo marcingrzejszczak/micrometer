@@ -18,10 +18,11 @@ package io.micrometer.core.instrument.listener.tracing;
 
 import java.util.concurrent.TimeUnit;
 
-import io.micrometer.core.event.interval.IntervalRecording;
-import io.micrometer.core.event.listener.RecordingListener;
-import io.micrometer.core.instrument.tracing.Span;
-import io.micrometer.core.instrument.tracing.Tracer;
+import io.micrometer.api.event.instant.InstantRecording;
+import io.micrometer.api.event.interval.IntervalRecording;
+import io.micrometer.api.event.listener.RecordingListener;
+import io.micrometer.api.instrument.tracing.Span;
+import io.micrometer.api.instrument.tracing.Tracer;
 
 /**
  * {@link RecordingListener} that uses the Tracing API to record events.
@@ -31,68 +32,67 @@ import io.micrometer.core.instrument.tracing.Tracer;
  */
 public class DefaultTracingRecordingListener implements TracingRecordingListener {
 
-	private final Tracer tracer;
+    private final Tracer tracer;
 
-	private final TracingInstantRecorder tracingInstantRecorder;
+    private final TracingInstantRecorder tracingInstantRecorder;
 
-	private final TracingTagFilter tracingTagFilter = new TracingTagFilter();
+    private final TracingTagFilter tracingTagFilter = new TracingTagFilter();
 
-	/**
-	 * Creates a new instance of {@link DefaultTracingRecordingListener}.
-	 *
-	 * @param tracer the tracer to use to record events
-	 */
-	public DefaultTracingRecordingListener(Tracer tracer) {
-		this.tracer = tracer;
-		this.tracingInstantRecorder = new TracingInstantRecorder(tracer);
-	}
+    /**
+     * Creates a new instance of {@link DefaultTracingRecordingListener}.
+     *
+     * @param tracer the tracer to use to record events
+     */
+    public DefaultTracingRecordingListener(Tracer tracer) {
+        this.tracer = tracer;
+        this.tracingInstantRecorder = new TracingInstantRecorder(tracer);
+    }
 
-	@Override
-    public void onCreate(IntervalRecording intervalRecording) {
-		Span span = getTracer().currentSpan();
-        intervalRecording.getContext(this).setSpanAndScope(span, () -> {
+    @Override
+    public void onCreate(IntervalRecording<TracingRecordingListener.TracingContext> intervalRecording) {
+        Span span = getTracer().currentSpan();
+        intervalRecording.getContext().setSpanAndScope(span, () -> {
         });
-	}
+    }
 
-	@Override
-    public void onStart(IntervalRecording intervalRecording) {
-        Span parentSpan = intervalRecording.getContext(this).getSpan();
-		Span childSpan = parentSpan != null ? getTracer().nextSpan(parentSpan) : getTracer().nextSpan();
-		childSpan.name(intervalRecording.getHighCardinalityName())
-				.start(getStartTimeInMicros(intervalRecording));
-		setSpanAndScope(intervalRecording, childSpan);
-	}
+    @Override
+    public void onStart(IntervalRecording<TracingRecordingListener.TracingContext> intervalRecording) {
+        Span parentSpan = intervalRecording.getContext().getSpan();
+        Span childSpan = parentSpan != null ? getTracer().nextSpan(parentSpan) : getTracer().nextSpan();
+        childSpan.name(intervalRecording.getHighCardinalityName()).start(getStartTimeInMicros(intervalRecording));
+        setSpanAndScope(intervalRecording, childSpan);
+    }
 
-	@Override
-    public void onStop(IntervalRecording intervalRecording) {
-        Span span = intervalRecording.getContext(this).getSpan().name(intervalRecording.getHighCardinalityName());
-		this.tracingTagFilter.tagSpan(span, intervalRecording.getTags());
-		cleanup(intervalRecording);
-		span.end(getStopTimeInMicros(intervalRecording));
-	}
+    @Override
+    public void onStop(IntervalRecording<TracingRecordingListener.TracingContext> intervalRecording) {
+        Span span = intervalRecording.getContext().getSpan().name(intervalRecording.getHighCardinalityName());
+        this.tracingTagFilter.tagSpan(span, intervalRecording.getTags());
+        cleanup(intervalRecording);
+        span.end(getStopTimeInMicros(intervalRecording));
+    }
 
-	@Override
-    public void onError(IntervalRecording intervalRecording) {
-        Span span = intervalRecording.getContext(this).getSpan();
-		span.error(intervalRecording.getError());
-	}
+    @Override
+    public void onError(IntervalRecording<TracingRecordingListener.TracingContext> intervalRecording) {
+        Span span = intervalRecording.getContext().getSpan();
+        span.error(intervalRecording.getError());
+    }
 
-//	@Override
-//	public void record(InstantRecording instantRecording) {
-//		this.tracingInstantRecorder.record(instantRecording);
-//	}
+    @Override
+    public void recordInstant(InstantRecording instantRecording) {
+        this.tracingInstantRecorder.record(instantRecording);
+    }
 
     long getStartTimeInMicros(IntervalRecording recording) {
-		return TimeUnit.NANOSECONDS.toMicros(recording.getStartWallTime());
-	}
+        return TimeUnit.NANOSECONDS.toMicros(recording.getStartWallTime());
+    }
 
     long getStopTimeInMicros(IntervalRecording recording) {
-		return TimeUnit.NANOSECONDS.toMicros(recording.getStartWallTime() + recording.getDuration().toNanos());
-	}
+        return TimeUnit.NANOSECONDS.toMicros(recording.getStartWallTime() + recording.getDuration().toNanos());
+    }
 
-	@Override
-	public Tracer getTracer() {
-		return this.tracer;
-	}
+    @Override
+    public Tracer getTracer() {
+        return this.tracer;
+    }
 
 }

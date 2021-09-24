@@ -15,6 +15,7 @@
  */
 package io.micrometer.kairos;
 
+import io.micrometer.api.instrument.*;
 import io.micrometer.core.instrument.*;
 import io.micrometer.core.instrument.step.StepMeterRegistry;
 import io.micrometer.core.instrument.util.DoubleFormat;

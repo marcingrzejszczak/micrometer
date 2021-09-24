@@ -15,12 +15,14 @@
  */
 package io.micrometer.core.instrument;
 
-import io.micrometer.core.lang.Nullable;
-
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToLongFunction;
+
+import io.micrometer.api.instrument.Tag;
+import io.micrometer.api.instrument.Tags;
+import io.micrometer.api.lang.Nullable;
 
 /**
  * A timer that tracks two monotonically increasing functions: one representing the count of events and one

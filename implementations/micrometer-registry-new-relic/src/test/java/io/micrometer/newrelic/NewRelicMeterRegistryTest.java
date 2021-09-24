@@ -16,6 +16,7 @@
 package io.micrometer.newrelic;
 
 import com.newrelic.api.agent.*;
+import io.micrometer.api.instrument.*;
 import io.micrometer.core.instrument.*;
 import io.micrometer.core.instrument.config.NamingConvention;
 import io.micrometer.core.instrument.config.validate.ValidationException;

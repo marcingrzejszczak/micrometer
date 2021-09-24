@@ -15,9 +15,11 @@
  */
 package io.micrometer.core.instrument.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import io.micrometer.api.instrument.util.StringUtils;
 
 /**
  * Tests for {@link StringUtils}.

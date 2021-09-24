@@ -15,15 +15,21 @@
  */
 package io.micrometer.prometheus;
 
-import io.micrometer.core.instrument.AbstractDistributionSummary;
-import io.micrometer.core.instrument.Clock;
-import io.micrometer.core.instrument.distribution.*;
-import io.micrometer.core.instrument.util.MeterEquivalence;
-import io.micrometer.core.lang.Nullable;
-
 import java.time.Duration;
 import java.util.concurrent.atomic.DoubleAdder;
 import java.util.concurrent.atomic.LongAdder;
+
+import io.micrometer.api.instrument.Clock;
+import io.micrometer.api.lang.Nullable;
+import io.micrometer.core.instrument.AbstractDistributionSummary;
+import io.micrometer.core.instrument.distribution.CountAtBucket;
+import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
+import io.micrometer.core.instrument.distribution.FixedBoundaryVictoriaMetricsHistogram;
+import io.micrometer.core.instrument.distribution.Histogram;
+import io.micrometer.core.instrument.distribution.HistogramSnapshot;
+import io.micrometer.core.instrument.distribution.TimeWindowFixedBoundaryHistogram;
+import io.micrometer.core.instrument.distribution.TimeWindowMax;
+import io.micrometer.core.instrument.util.MeterEquivalence;
 
 public class PrometheusDistributionSummary extends AbstractDistributionSummary {
     private static final CountAtBucket[] EMPTY_HISTOGRAM = new CountAtBucket[0];

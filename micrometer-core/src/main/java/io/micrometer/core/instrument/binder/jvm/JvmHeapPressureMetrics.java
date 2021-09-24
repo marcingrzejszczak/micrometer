@@ -19,11 +19,11 @@ import com.sun.management.GarbageCollectionNotificationInfo;
 import com.sun.management.GcInfo;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Tag;
+import io.micrometer.api.instrument.Tag;
 import io.micrometer.core.instrument.binder.BaseUnits;
 import io.micrometer.core.instrument.binder.MeterBinder;
 import io.micrometer.core.instrument.distribution.TimeWindowSum;
-import io.micrometer.core.lang.NonNull;
+import io.micrometer.api.lang.NonNull;
 
 import javax.management.ListenerNotFoundException;
 import javax.management.NotificationEmitter;

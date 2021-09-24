@@ -16,9 +16,10 @@
 package io.micrometer.prometheus;
 
 import io.micrometer.core.Issue;
+import io.micrometer.api.instrument.*;
 import io.micrometer.core.instrument.*;
-import io.micrometer.core.instrument.binder.BaseUnits;
-import io.micrometer.core.instrument.composite.CompositeMeterRegistry;
+import io.micrometer.api.instrument.binder.BaseUnits;
+import io.micrometer.api.instrument.composite.CompositeMeterRegistry;
 import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
 import io.micrometer.core.instrument.distribution.HistogramSnapshot;
 import io.prometheus.client.Collector;

@@ -16,8 +16,8 @@
 
 package io.micrometer.core.instrument.listener.tracing;
 
-import io.micrometer.core.instrument.Tag;
-import io.micrometer.core.instrument.tracing.Span;
+import io.micrometer.api.instrument.Tag;
+import io.micrometer.api.instrument.tracing.Span;
 
 class TracingTagFilter {
 

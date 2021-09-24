@@ -16,7 +16,7 @@
 package io.micrometer.core.instrument.dropwizard;
 
 import com.codahale.metrics.EWMA;
-import io.micrometer.core.instrument.Clock;
+import io.micrometer.api.instrument.Clock;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;

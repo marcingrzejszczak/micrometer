@@ -15,7 +15,7 @@
  */
 package io.micrometer.core.instrument.step;
 
-import io.micrometer.core.instrument.Clock;
+import io.micrometer.api.instrument.Clock;
 import io.micrometer.core.instrument.FunctionTimer;
 import io.micrometer.core.instrument.util.TimeUtils;
 

@@ -15,15 +15,22 @@
  */
 package io.micrometer.appoptics;
 
-import io.micrometer.core.instrument.config.validate.InvalidReason;
-import io.micrometer.core.instrument.config.validate.Validated;
-import io.micrometer.core.instrument.step.StepRegistryConfig;
-import io.micrometer.core.lang.Nullable;
+import static io.micrometer.core.instrument.config.MeterRegistryConfigValidator.check;
+import static io.micrometer.core.instrument.config.MeterRegistryConfigValidator.checkAll;
+import static io.micrometer.core.instrument.config.MeterRegistryConfigValidator.checkRequired;
+import static io.micrometer.core.instrument.config.validate.PropertyValidator.getBoolean;
+import static io.micrometer.core.instrument.config.validate.PropertyValidator.getDuration;
+import static io.micrometer.core.instrument.config.validate.PropertyValidator.getInteger;
+import static io.micrometer.core.instrument.config.validate.PropertyValidator.getSecret;
+import static io.micrometer.core.instrument.config.validate.PropertyValidator.getString;
+import static io.micrometer.core.instrument.config.validate.PropertyValidator.getUrlString;
 
 import java.time.Duration;
 
-import static io.micrometer.core.instrument.config.MeterRegistryConfigValidator.*;
-import static io.micrometer.core.instrument.config.validate.PropertyValidator.*;
+import io.micrometer.api.lang.Nullable;
+import io.micrometer.core.instrument.config.validate.InvalidReason;
+import io.micrometer.core.instrument.config.validate.Validated;
+import io.micrometer.core.instrument.step.StepRegistryConfig;
 
 /**
  * Configuration for {@link AppOpticsMeterRegistry}.

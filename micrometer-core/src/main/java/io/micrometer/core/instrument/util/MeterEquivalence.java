@@ -16,7 +16,7 @@
 package io.micrometer.core.instrument.util;
 
 import io.micrometer.core.instrument.Meter;
-import io.micrometer.core.lang.Nullable;
+import io.micrometer.api.lang.Nullable;
 
 /**
  * @author Jon Schneider

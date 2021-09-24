@@ -17,6 +17,7 @@ package io.micrometer.cloudwatch;
 
 import com.amazonaws.services.cloudwatch.model.Dimension;
 import com.amazonaws.services.cloudwatch.model.MetricDatum;
+import io.micrometer.api.instrument.*;
 import io.micrometer.core.instrument.*;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;

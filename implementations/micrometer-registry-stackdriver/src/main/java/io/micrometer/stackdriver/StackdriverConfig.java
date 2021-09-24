@@ -22,7 +22,7 @@ import com.google.cloud.monitoring.v3.MetricServiceSettings;
 import io.micrometer.core.instrument.config.validate.InvalidReason;
 import io.micrometer.core.instrument.config.validate.Validated;
 import io.micrometer.core.instrument.step.StepRegistryConfig;
-import io.micrometer.core.instrument.util.StringUtils;
+import io.micrometer.api.instrument.util.StringUtils;
 
 import java.io.FileInputStream;
 import java.io.IOException;

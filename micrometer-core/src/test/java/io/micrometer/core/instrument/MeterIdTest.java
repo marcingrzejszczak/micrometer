@@ -15,9 +15,12 @@
  */
 package io.micrometer.core.instrument;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import io.micrometer.api.instrument.Tag;
+import io.micrometer.api.instrument.Tags;
 
 /**
  * Tests for {@link Meter.Id}.

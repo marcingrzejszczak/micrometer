@@ -15,7 +15,7 @@
  */
 package io.micrometer.core.instrument.config.validate;
 
-import io.micrometer.core.annotation.Incubating;
+import io.micrometer.api.annotation.Incubating;
 
 import java.util.stream.Collectors;
 

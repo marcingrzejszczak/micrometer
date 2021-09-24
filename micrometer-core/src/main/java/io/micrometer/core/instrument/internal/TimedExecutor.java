@@ -16,8 +16,8 @@
 package io.micrometer.core.instrument.internal;
 
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Tag;
-import io.micrometer.core.instrument.Tags;
+import io.micrometer.api.instrument.Tag;
+import io.micrometer.api.instrument.Tags;
 import io.micrometer.core.instrument.Timer;
 
 import java.util.concurrent.Executor;

@@ -15,7 +15,7 @@
  */
 package io.micrometer.statsd.internal;
 
-import io.micrometer.core.instrument.binder.logging.LogbackMetrics;
+import io.micrometer.api.instrument.binder.logging.LogbackMetrics;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
 

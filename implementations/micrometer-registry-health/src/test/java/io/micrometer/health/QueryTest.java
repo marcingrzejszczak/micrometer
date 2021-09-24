@@ -15,7 +15,7 @@
  */
 package io.micrometer.health;
 
-import io.micrometer.core.instrument.FunctionCounter;
+import io.micrometer.api.instrument.FunctionCounter;
 import io.micrometer.core.instrument.MockClock;
 import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.util.TimeUtils;

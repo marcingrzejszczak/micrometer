@@ -15,7 +15,7 @@
  */
 package io.micrometer.cloudwatch2;
 
-import io.micrometer.core.annotation.Incubating;
+import io.micrometer.api.annotation.Incubating;
 import io.micrometer.core.instrument.config.MeterFilter;
 import io.micrometer.core.instrument.config.validate.InvalidReason;
 import io.micrometer.core.instrument.config.validate.Validated;

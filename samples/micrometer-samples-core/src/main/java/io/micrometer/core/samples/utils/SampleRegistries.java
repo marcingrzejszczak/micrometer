@@ -15,21 +15,31 @@
  */
 package io.micrometer.core.samples.utils;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UncheckedIOException;
+import java.net.InetSocketAddress;
+import java.time.Duration;
+
 import com.google.api.gax.core.FixedCredentialsProvider;
 import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.cloud.monitoring.v3.MetricServiceSettings;
 import com.netflix.spectator.atlas.AtlasConfig;
 import com.sun.net.httpserver.HttpServer;
+
+import io.micrometer.api.instrument.Clock;
+import io.micrometer.api.lang.Nullable;
 import io.micrometer.appoptics.AppOpticsConfig;
 import io.micrometer.appoptics.AppOpticsMeterRegistry;
 import io.micrometer.atlas.AtlasMeterRegistry;
 import io.micrometer.azuremonitor.AzureMonitorConfig;
 import io.micrometer.azuremonitor.AzureMonitorMeterRegistry;
-import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.logging.LoggingMeterRegistry;
 import io.micrometer.core.instrument.logging.LoggingRegistryConfig;
-import io.micrometer.core.lang.Nullable;
 import io.micrometer.datadog.DatadogConfig;
 import io.micrometer.datadog.DatadogMeterRegistry;
 import io.micrometer.dynatrace.DynatraceConfig;
@@ -61,10 +71,6 @@ import io.micrometer.statsd.StatsdFlavor;
 import io.micrometer.statsd.StatsdMeterRegistry;
 import io.micrometer.wavefront.WavefrontConfig;
 import io.micrometer.wavefront.WavefrontMeterRegistry;
-
-import java.io.*;
-import java.net.InetSocketAddress;
-import java.time.Duration;
 
 public class SampleRegistries {
     public static MeterRegistry pickOne() {

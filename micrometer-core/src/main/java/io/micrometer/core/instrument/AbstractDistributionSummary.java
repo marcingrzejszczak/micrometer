@@ -15,9 +15,15 @@
  */
 package io.micrometer.core.instrument;
 
-import io.micrometer.core.instrument.distribution.*;
+import io.micrometer.api.instrument.Clock;
+import io.micrometer.api.lang.Nullable;
+import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
+import io.micrometer.core.instrument.distribution.Histogram;
+import io.micrometer.core.instrument.distribution.HistogramSnapshot;
+import io.micrometer.core.instrument.distribution.NoopHistogram;
+import io.micrometer.core.instrument.distribution.TimeWindowFixedBoundaryHistogram;
+import io.micrometer.core.instrument.distribution.TimeWindowPercentileHistogram;
 import io.micrometer.core.instrument.util.MeterEquivalence;
-import io.micrometer.core.lang.Nullable;
 
 public abstract class AbstractDistributionSummary extends AbstractMeter implements DistributionSummary {
     protected final Histogram histogram;

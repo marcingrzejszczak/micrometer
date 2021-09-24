@@ -16,11 +16,11 @@
 
 package io.micrometer.core.instrument.listener.tracing;
 
-import io.micrometer.core.event.interval.IntervalRecording;
-import io.micrometer.core.event.listener.RecordingListener;
-import io.micrometer.core.instrument.tracing.CurrentTraceContext;
-import io.micrometer.core.instrument.tracing.Span;
-import io.micrometer.core.instrument.tracing.Tracer;
+import io.micrometer.api.event.interval.IntervalRecording;
+import io.micrometer.api.event.listener.RecordingListener;
+import io.micrometer.api.instrument.tracing.CurrentTraceContext;
+import io.micrometer.api.instrument.tracing.Span;
+import io.micrometer.api.instrument.tracing.Tracer;
 
 /**
  * Marker interface for tracing listeners.
@@ -31,7 +31,7 @@ import io.micrometer.core.instrument.tracing.Tracer;
 public interface TracingRecordingListener extends RecordingListener<TracingRecordingListener.TracingContext> {
 
 	@Override
-    default void onCreate(IntervalRecording intervalRecording) {
+    default void onCreate(IntervalRecording<TracingRecordingListener.TracingContext> intervalRecording) {
 		Span span = getTracer().currentSpan();
 		if (span != null) {
 			setSpanAndScope(intervalRecording, span);
@@ -44,12 +44,13 @@ public interface TracingRecordingListener extends RecordingListener<TracingRecor
 	 * @param intervalRecording recording with context to mutate
 	 * @param span span to put in context
 	 */
-    default void setSpanAndScope(IntervalRecording intervalRecording, Span span) {
+    default void setSpanAndScope(IntervalRecording<TracingRecordingListener.TracingContext> intervalRecording,
+            Span span) {
 		if (span == null) {
 			return;
 		}
 		CurrentTraceContext.Scope scope = getTracer().currentTraceContext().maybeScope(span.context());
-        intervalRecording.getContext(this).setSpanAndScope(span, scope);
+        intervalRecording.getContext().setSpanAndScope(span, scope);
 	}
 
 	/**
@@ -57,8 +58,8 @@ public interface TracingRecordingListener extends RecordingListener<TracingRecor
 	 *
 	 * @param intervalRecording recording with context containing scope
 	 */
-    default void cleanup(IntervalRecording intervalRecording) {
-        TracingContext context = intervalRecording.getContext(this);
+    default void cleanup(IntervalRecording<TracingRecordingListener.TracingContext> intervalRecording) {
+        TracingContext context = intervalRecording.getContext();
 		context.getScope().close();
 	}
 
@@ -68,8 +69,8 @@ public interface TracingRecordingListener extends RecordingListener<TracingRecor
 	}
 
 	@Override
-    default void onRestore(IntervalRecording intervalRecording) {
-        Span span = intervalRecording.getContext(this).getSpan();
+    default void onRestore(IntervalRecording<TracingRecordingListener.TracingContext> intervalRecording) {
+        Span span = intervalRecording.getContext().getSpan();
 		setSpanAndScope(intervalRecording, span);
 	}
 

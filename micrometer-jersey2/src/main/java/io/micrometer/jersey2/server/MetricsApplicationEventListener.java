@@ -15,13 +15,14 @@
  */
 package io.micrometer.jersey2.server;
 
-import io.micrometer.core.instrument.MeterRegistry;
+import static java.util.Objects.requireNonNull;
+
 import org.glassfish.jersey.server.monitoring.ApplicationEvent;
 import org.glassfish.jersey.server.monitoring.ApplicationEventListener;
 import org.glassfish.jersey.server.monitoring.RequestEvent;
 import org.glassfish.jersey.server.monitoring.RequestEventListener;
 
-import static java.util.Objects.requireNonNull;
+import io.micrometer.core.instrument.MeterRegistry;
 
 /**
  * The Micrometer {@link ApplicationEventListener} which registers

@@ -15,17 +15,19 @@
  */
 package io.micrometer.core.instrument;
 
-import io.micrometer.core.annotation.Timed;
-import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
-import io.micrometer.core.instrument.distribution.HistogramSupport;
-import io.micrometer.core.lang.Nullable;
-
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import io.micrometer.api.annotation.Timed;
+import io.micrometer.api.instrument.Tag;
+import io.micrometer.api.instrument.Tags;
+import io.micrometer.api.lang.Nullable;
+import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
+import io.micrometer.core.instrument.distribution.HistogramSupport;
 
 /**
  * A long task timer is used to track the total duration of all in-flight long-running tasks and the number of

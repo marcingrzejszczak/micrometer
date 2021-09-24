@@ -25,6 +25,9 @@ import org.LatencyUtils.IntervalEstimator;
 import org.LatencyUtils.SimplePauseDetector;
 import org.LatencyUtils.TimeCappedMovingAverageIntervalEstimator;
 
+import io.micrometer.api.instrument.Clock;
+import io.micrometer.api.instrument.Sample;
+import io.micrometer.api.lang.Nullable;
 import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
 import io.micrometer.core.instrument.distribution.Histogram;
 import io.micrometer.core.instrument.distribution.HistogramSnapshot;
@@ -34,7 +37,6 @@ import io.micrometer.core.instrument.distribution.TimeWindowPercentileHistogram;
 import io.micrometer.core.instrument.distribution.pause.ClockDriftPauseDetector;
 import io.micrometer.core.instrument.distribution.pause.PauseDetector;
 import io.micrometer.core.instrument.util.MeterEquivalence;
-import io.micrometer.core.lang.Nullable;
 
 public abstract class AbstractTimer extends AbstractMeter implements Timer {
     private static Map<PauseDetector, org.LatencyUtils.PauseDetector> pauseDetectorCache =
@@ -151,7 +153,7 @@ public abstract class AbstractTimer extends AbstractMeter implements Timer {
     @Override
     public <T> T recordCallable(Callable<T> f) throws Exception {
         if (this.meterRegistry != null) {
-            return recordCallable(Timer.sample(() -> "callable", this.meterRegistry), f);
+            return recordCallable(Sample.sample(() -> "callable", this.meterRegistry.config().recorder()), f);
         }
         final long s = clock.monotonicTime();
         try {
@@ -165,7 +167,7 @@ public abstract class AbstractTimer extends AbstractMeter implements Timer {
     @Override
     public <T> T record(Supplier<T> f) {
         if (this.meterRegistry != null) {
-            return record(Timer.sample(() -> "callable", this.meterRegistry), f);
+            return record(Sample.sample(() -> "callable", this.meterRegistry.config().recorder()), f);
         }
         final long s = clock.monotonicTime();
         try {
@@ -179,7 +181,7 @@ public abstract class AbstractTimer extends AbstractMeter implements Timer {
     @Override
     public void record(Runnable f) {
         if (this.meterRegistry != null) {
-            record(Timer.sample(() -> "callable", this.meterRegistry), f);
+            record(Sample.sample(() -> "callable", this.meterRegistry.config().recorder()), f);
             return;
         }
         final long s = clock.monotonicTime();
@@ -203,7 +205,7 @@ public abstract class AbstractTimer extends AbstractMeter implements Timer {
         }
     }
 
-    private <T> T recordCallable(Timer.Sample sample, Callable<T> f) throws Exception {
+    private <T> T recordCallable(Sample sample, Callable<T> f) throws Exception {
         Sample start = sample.start();
         try {
             return f.call();
@@ -215,7 +217,7 @@ public abstract class AbstractTimer extends AbstractMeter implements Timer {
         }
     }
 
-    private <T> T record(Timer.Sample sample, Supplier<T> f) {
+    private <T> T record(Sample sample, Supplier<T> f) {
         Sample start = sample.start();
         try {
             return f.get();
@@ -227,7 +229,7 @@ public abstract class AbstractTimer extends AbstractMeter implements Timer {
         }
     }
 
-    private void record(Timer.Sample sample, Runnable f) {
+    private void record(Sample sample, Runnable f) {
         Sample start = sample.start();
         try {
             f.run();

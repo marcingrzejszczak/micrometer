@@ -16,7 +16,7 @@
 package io.micrometer.core.instrument.binder;
 
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.lang.NonNull;
+import io.micrometer.api.lang.NonNull;
 
 /**
  * Binders register one or more metrics to provide information about the state

@@ -15,16 +15,23 @@
  */
 package io.micrometer.prometheus;
 
-import io.micrometer.core.instrument.Meter;
-import io.micrometer.core.instrument.Tag;
-import io.micrometer.core.instrument.config.NamingConvention;
-import io.prometheus.client.Collector;
+import static java.util.stream.Collectors.toList;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.toList;
+import io.micrometer.api.instrument.Tag;
+import io.micrometer.core.instrument.Meter;
+import io.micrometer.core.instrument.config.NamingConvention;
+import io.prometheus.client.Collector;
 
 /**
  * {@link Collector} for Micrometer.

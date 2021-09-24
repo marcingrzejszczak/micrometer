@@ -6,14 +6,19 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 
-import io.micrometer.core.event.interval.IntervalRecording;
-import io.micrometer.core.event.listener.RecordingListener;
-import io.micrometer.core.event.listener.composite.AllMatchingCompositeRecordingListener;
-import io.micrometer.core.event.listener.composite.CompositeContext;
-import io.micrometer.core.instrument.Cardinality;
+import io.micrometer.api.event.Recorder;
+import io.micrometer.api.event.SimpleRecorder;
+import io.micrometer.api.event.instant.InstantRecording;
+import io.micrometer.api.event.interval.IntervalEvent;
+import io.micrometer.api.event.interval.IntervalRecording;
+import io.micrometer.api.event.listener.RecordingListener;
+import io.micrometer.api.event.listener.composite.AllMatchingCompositeRecordingListener;
+import io.micrometer.api.event.listener.composite.CompositeContext;
+import io.micrometer.api.instrument.Cardinality;
+import io.micrometer.api.instrument.Clock;
+import io.micrometer.api.instrument.Sample;
+import io.micrometer.api.instrument.Tag;
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Tag;
-import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
 class RecordingSample {
@@ -24,9 +29,9 @@ class RecordingSample {
                 new SoutRecordingListenerWoContext(),
                 new SoutRecordingListenerWContext()
         );
-        Recorder recorder = new SimpleRecorder(listener);
+        Recorder<?> recorder = new SimpleRecorder(listener, Clock.SYSTEM, Collections.emptyList());
 
-        IntervalRecording recording = recorder.recordingFor(() -> "testEvent")
+        IntervalRecording<?> recording = recorder.recordingFor((IntervalEvent) () -> "testEvent")
                 .tag(Tag.of("a", "b"))
                 .tag(Tag.of("c", UUID.randomUUID().toString(), Cardinality.HIGH))
                 .start();
@@ -43,9 +48,9 @@ class RecordingSample {
                 new SoutRecordingListenerWContext()
         );
         MeterRegistry registry = new SimpleMeterRegistry();
-        registry.config().recordingListener(listener);
+        registry.config().recorder(new SimpleRecorder<>(listener, Clock.SYSTEM, Collections.emptyList()));
 
-        Timer.Sample sample = Timer.sample(() -> "testEvent", registry)
+        Sample sample = Sample.sample(() -> "testEvent", registry.config().recorder())
                 .tag(Tag.of("a", "b"))
                 .tag(Tag.of("c", UUID.randomUUID().toString(), Cardinality.HIGH))
                 .start();
@@ -60,7 +65,7 @@ class RecordingSample {
         RecordingListener<CompositeContext> listener = new AllMatchingCompositeRecordingListener(
                 new SoutRecordingListenerWoContext(), new SoutRecordingListenerWContext());
         MeterRegistry registry = new SimpleMeterRegistry();
-        registry.config().recordingListener(listener);
+        registry.config().recorder(new SimpleRecorder<>(listener, Clock.SYSTEM, Collections.emptyList()));
 
         registry.timer("testEvent",
                 Collections.singletonList(Tag.of("c", UUID.randomUUID().toString(), Cardinality.HIGH)))
@@ -77,29 +82,33 @@ class RecordingSample {
         }
 
         @Override
-        public void onCreate(IntervalRecording intervalRecording) {
-            System.out.println("create: " + intervalRecording + " context: " + intervalRecording.getContext(this));
+        public void onCreate(IntervalRecording<Void> intervalRecording) {
+            System.out.println("create: " + intervalRecording + " context: " + intervalRecording.getContext());
         }
 
         @Override
-        public void onStart(IntervalRecording intervalRecording) {
-            System.out.println("start: " + intervalRecording + " context: " + intervalRecording.getContext(this));
+        public void onStart(IntervalRecording<Void> intervalRecording) {
+            System.out.println("start: " + intervalRecording + " context: " + intervalRecording.getContext());
 
         }
 
         @Override
-        public void onStop(IntervalRecording intervalRecording) {
-            System.out.println("stop: " + intervalRecording + " context: " + intervalRecording.getContext(this));
+        public void onStop(IntervalRecording<Void> intervalRecording) {
+            System.out.println("stop: " + intervalRecording + " context: " + intervalRecording.getContext());
         }
 
         @Override
-        public void onError(IntervalRecording intervalRecording) {
-            System.out.println("error: " + intervalRecording + " context: " + intervalRecording.getContext(this));
+        public void onError(IntervalRecording<Void> intervalRecording) {
+            System.out.println("error: " + intervalRecording + " context: " + intervalRecording.getContext());
         }
 
         @Override
-        public void onRestore(IntervalRecording intervalRecording) {
-            System.out.println("restore: " + intervalRecording + " context: " + intervalRecording.getContext(this));
+        public void onRestore(IntervalRecording<Void> intervalRecording) {
+            System.out.println("restore: " + intervalRecording + " context: " + intervalRecording.getContext());
+        }
+
+        @Override
+        public void recordInstant(InstantRecording instantRecording) {
         }
     }
 
@@ -110,34 +119,34 @@ class RecordingSample {
         }
 
         @Override
-        public void onCreate(IntervalRecording intervalRecording) {
-            System.out.println("create: " + intervalRecording + " context: " + intervalRecording.getContext(this));
-            intervalRecording.getContext(this).setId("setByCreate");
+        public void onCreate(IntervalRecording<TestContext> intervalRecording) {
+            System.out.println("create: " + intervalRecording + " context: " + intervalRecording.getContext());
+            intervalRecording.getContext().setId("setByCreate");
         }
 
         @Override
-        public void onStart(IntervalRecording intervalRecording) {
-            System.out.println("start: " + intervalRecording + " context: " + intervalRecording.getContext(this));
-            intervalRecording.getContext(this).setId("setByStart");
+        public void onStart(IntervalRecording<TestContext> intervalRecording) {
+            System.out.println("start: " + intervalRecording + " context: " + intervalRecording.getContext());
+            intervalRecording.getContext().setId("setByStart");
 
         }
 
         @Override
-        public void onStop(IntervalRecording intervalRecording) {
-            System.out.println("stop: " + intervalRecording + " context: " + intervalRecording.getContext(this));
-            intervalRecording.getContext(this).setId("setByStop");
+        public void onStop(IntervalRecording<TestContext> intervalRecording) {
+            System.out.println("stop: " + intervalRecording + " context: " + intervalRecording.getContext());
+            intervalRecording.getContext().setId("setByStop");
         }
 
         @Override
-        public void onError(IntervalRecording intervalRecording) {
-            System.out.println("error: " + intervalRecording + " context: " + intervalRecording.getContext(this));
-            intervalRecording.getContext(this).setId("setByError");
+        public void onError(IntervalRecording<TestContext> intervalRecording) {
+            System.out.println("error: " + intervalRecording + " context: " + intervalRecording.getContext());
+            intervalRecording.getContext().setId("setByError");
         }
 
         @Override
-        public void onRestore(IntervalRecording intervalRecording) {
-            System.out.println("restore: " + intervalRecording + " context: " + intervalRecording.getContext(this));
-            intervalRecording.getContext(this).setId("setByRestore");
+        public void onRestore(IntervalRecording<TestContext> intervalRecording) {
+            System.out.println("restore: " + intervalRecording + " context: " + intervalRecording.getContext());
+            intervalRecording.getContext().setId("setByRestore");
         }
 
         static class TestContext {
@@ -159,6 +168,11 @@ class RecordingSample {
             public String toString() {
                 return "TestContext{ id=" + id + " }";
             }
+        }
+
+        @Override
+        public void recordInstant(InstantRecording instantRecording) {
+
         }
     }
 

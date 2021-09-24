@@ -15,13 +15,15 @@
  */
 package io.micrometer.core.instrument;
 
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
+
+import io.micrometer.api.instrument.Tags;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
 class TimeGaugeTest {
     @Test

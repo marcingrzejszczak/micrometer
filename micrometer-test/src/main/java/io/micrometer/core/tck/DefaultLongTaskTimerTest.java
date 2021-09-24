@@ -15,22 +15,23 @@
  */
 package io.micrometer.core.tck;
 
-import io.micrometer.core.instrument.LongTaskTimer;
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.MockClock;
-import io.micrometer.core.instrument.distribution.CountAtBucket;
-import io.micrometer.core.instrument.simple.SimpleConfig;
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import static io.micrometer.core.instrument.MockClock.clock;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static io.micrometer.core.instrument.MockClock.clock;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import io.micrometer.core.instrument.LongTaskTimer;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.MockClock;
+import io.micrometer.core.instrument.distribution.CountAtBucket;
+import io.micrometer.core.instrument.simple.SimpleConfig;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
 public class DefaultLongTaskTimerTest {
     @Test

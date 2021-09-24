@@ -16,8 +16,8 @@
 package io.micrometer.core.instrument.binder.jetty;
 
 import io.micrometer.core.instrument.MockClock;
-import io.micrometer.core.instrument.Tag;
-import io.micrometer.core.instrument.Tags;
+import io.micrometer.api.instrument.Tag;
+import io.micrometer.api.instrument.Tags;
 import io.micrometer.core.instrument.simple.SimpleConfig;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.eclipse.jetty.io.ssl.SslHandshakeListener;

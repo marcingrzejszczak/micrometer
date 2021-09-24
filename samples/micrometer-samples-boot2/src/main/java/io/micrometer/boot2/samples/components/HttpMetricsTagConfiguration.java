@@ -15,10 +15,15 @@
  */
 package io.micrometer.boot2.samples.components;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.cache.CacheBuilder;
-import io.micrometer.core.instrument.Tag;
-import io.micrometer.core.instrument.Tags;
+import java.io.IOException;
+import java.time.Duration;
+import java.util.Map;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.boot.actuate.metrics.web.servlet.DefaultWebMvcTagsProvider;
 import org.springframework.boot.actuate.metrics.web.servlet.WebMvcTagsProvider;
 import org.springframework.context.annotation.Bean;
@@ -27,14 +32,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.time.Duration;
-import java.util.Map;
-import java.util.Optional;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.cache.CacheBuilder;
+
+import io.micrometer.api.instrument.Tags;
 
 /**
  * Demonstrates how to add custom tags based on the contents of the response body.
@@ -74,14 +75,15 @@ public class HttpMetricsTagConfiguration {
     @Bean
     WebMvcTagsProvider webMvcTagsProvider() {
         return new DefaultWebMvcTagsProvider() {
-            @Override
-            public Iterable<Tag> getTags(HttpServletRequest request, HttpServletResponse response,
-                                         Object handler, Throwable exception) {
-                return Tags.concat(
-                        super.getTags(request, response, handler, exception),
-                        Optional.ofNullable(responseTags.remove(response)).orElse(Tags.empty())
-                );
-            }
+            // TODO: Need to fix this in boot
+//            @Override
+//            public Iterable<Tag> getTags(HttpServletRequest request, HttpServletResponse response,
+//                                         Object handler, Throwable exception) {
+//                return Tags.concat(
+//                        super.getTags(request, response, handler, exception),
+//                        Optional.ofNullable(responseTags.remove(response)).orElse(Tags.empty())
+//                );
+//            }
         };
     }
 }

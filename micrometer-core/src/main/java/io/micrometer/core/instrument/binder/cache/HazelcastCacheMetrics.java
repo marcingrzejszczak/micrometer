@@ -16,10 +16,12 @@
 package io.micrometer.core.instrument.binder.cache;
 
 import io.micrometer.core.instrument.*;
+import io.micrometer.api.instrument.*;
+import io.micrometer.core.instrument.*;
 import io.micrometer.core.instrument.binder.BaseUnits;
-import io.micrometer.core.lang.NonNullApi;
-import io.micrometer.core.lang.NonNullFields;
-import io.micrometer.core.lang.Nullable;
+import io.micrometer.api.lang.NonNullApi;
+import io.micrometer.api.lang.NonNullFields;
+import io.micrometer.api.lang.Nullable;
 
 import java.util.concurrent.TimeUnit;
 

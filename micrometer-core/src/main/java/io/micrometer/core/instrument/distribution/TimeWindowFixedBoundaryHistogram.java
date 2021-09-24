@@ -15,7 +15,7 @@
  */
 package io.micrometer.core.instrument.distribution;
 
-import io.micrometer.core.instrument.Clock;
+import io.micrometer.api.instrument.Clock;
 
 import java.io.PrintStream;
 import java.util.Arrays;

@@ -28,10 +28,10 @@ import io.grpc.MethodDescriptor;
 import io.grpc.ServiceDescriptor;
 import io.grpc.Status;
 import io.grpc.Status.Code;
+import io.micrometer.api.instrument.Sample;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
-import io.micrometer.core.instrument.Timer.Sample;
 import io.micrometer.core.instrument.binder.BaseUnits;
 
 /**
@@ -271,7 +271,7 @@ public abstract class AbstractMetricCollectingInterceptor {
          *         invoking the returned consumer along with the status code.
          */
         public Consumer<Status.Code> newProcessingDurationTiming(final MeterRegistry registry) {
-            final Timer.Sample timerSample = Timer.start(registry);
+            final Sample timerSample = Sample.start(registry.config().recorder());
             return code -> timerSample.stop(this.timerFunction.apply(code));
         }
 

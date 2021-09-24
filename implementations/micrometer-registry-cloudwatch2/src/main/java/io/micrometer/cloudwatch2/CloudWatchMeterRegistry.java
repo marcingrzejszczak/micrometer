@@ -16,12 +16,13 @@
 package io.micrometer.cloudwatch2;
 
 import io.micrometer.core.instrument.Timer;
+import io.micrometer.api.instrument.*;
 import io.micrometer.core.instrument.*;
 import io.micrometer.core.instrument.step.StepMeterRegistry;
 import io.micrometer.core.instrument.util.NamedThreadFactory;
-import io.micrometer.core.instrument.util.StringUtils;
-import io.micrometer.core.lang.Nullable;
-import io.micrometer.core.util.internal.logging.WarnThenDebugLogger;
+import io.micrometer.api.instrument.util.StringUtils;
+import io.micrometer.api.lang.Nullable;
+import io.micrometer.api.util.internal.logging.WarnThenDebugLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.core.exception.AbortedException;

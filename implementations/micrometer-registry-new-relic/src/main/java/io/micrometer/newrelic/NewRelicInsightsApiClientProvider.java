@@ -15,6 +15,7 @@
  */
 package io.micrometer.newrelic;
 
+import io.micrometer.api.instrument.*;
 import io.micrometer.core.instrument.*;
 import io.micrometer.core.instrument.config.NamingConvention;
 import io.micrometer.core.instrument.util.DoubleFormat;

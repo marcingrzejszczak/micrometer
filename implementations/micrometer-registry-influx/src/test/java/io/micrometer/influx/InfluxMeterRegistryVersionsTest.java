@@ -26,7 +26,7 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MockClock;
 import io.micrometer.core.instrument.config.validate.Validated;
 import io.micrometer.core.instrument.config.validate.ValidationException;
-import io.micrometer.core.lang.NonNull;
+import io.micrometer.api.lang.NonNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import ru.lanwen.wiremock.ext.WiremockResolver;

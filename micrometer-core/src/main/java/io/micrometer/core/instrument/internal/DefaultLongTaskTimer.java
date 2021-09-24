@@ -16,7 +16,7 @@
 package io.micrometer.core.instrument.internal;
 
 import io.micrometer.core.instrument.AbstractMeter;
-import io.micrometer.core.instrument.Clock;
+import io.micrometer.api.instrument.Clock;
 import io.micrometer.core.instrument.LongTaskTimer;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.distribution.CountAtBucket;

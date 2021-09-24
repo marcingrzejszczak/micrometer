@@ -15,7 +15,23 @@
  */
 package io.micrometer.core.aop;
 
-import io.micrometer.core.annotation.Timed;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.catchThrowableOfType;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.function.Predicate;
+
+import javax.annotation.Nonnull;
+
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.junit.jupiter.api.Test;
+import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
+
+import io.micrometer.api.annotation.Timed;
+import io.micrometer.api.lang.NonNull;
 import io.micrometer.core.instrument.LongTaskTimer;
 import io.micrometer.core.instrument.Meter.Id;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -24,18 +40,6 @@ import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
 import io.micrometer.core.instrument.distribution.pause.PauseDetector;
 import io.micrometer.core.instrument.search.MeterNotFoundException;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
-import io.micrometer.core.lang.NonNull;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.junit.jupiter.api.Test;
-import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
-
-import javax.annotation.Nonnull;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
-import java.util.function.Predicate;
-
-import static java.util.concurrent.CompletableFuture.supplyAsync;
-import static org.assertj.core.api.Assertions.*;
 
 class TimedAspectTest {
     @Test

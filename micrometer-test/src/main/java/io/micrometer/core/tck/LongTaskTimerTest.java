@@ -15,11 +15,11 @@
  */
 package io.micrometer.core.tck;
 
-import io.micrometer.core.annotation.Timed;
+import io.micrometer.api.annotation.Timed;
 import io.micrometer.core.instrument.LongTaskTimer;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Tag;
+import io.micrometer.api.instrument.Tag;
 import io.micrometer.core.instrument.distribution.CountAtBucket;
 import io.micrometer.core.instrument.distribution.ValueAtPercentile;
 import io.micrometer.core.instrument.internal.CumulativeHistogramLongTaskTimer;

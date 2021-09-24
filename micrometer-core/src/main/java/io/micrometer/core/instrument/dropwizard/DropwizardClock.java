@@ -18,9 +18,9 @@ package io.micrometer.core.instrument.dropwizard;
 import com.codahale.metrics.Clock;
 
 public class DropwizardClock extends Clock {
-    private final io.micrometer.core.instrument.Clock micrometerClock;
+    private final io.micrometer.api.instrument.Clock micrometerClock;
 
-    public DropwizardClock(io.micrometer.core.instrument.Clock micrometerClock) {
+    public DropwizardClock(io.micrometer.api.instrument.Clock micrometerClock) {
         this.micrometerClock = micrometerClock;
     }
 

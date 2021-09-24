@@ -15,10 +15,8 @@
  */
 package io.micrometer.core.instrument;
 
-import io.micrometer.core.instrument.MultiGauge.Row;
-import io.micrometer.core.instrument.config.MeterFilter;
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
-import org.junit.jupiter.api.Test;
+import static java.util.stream.Collectors.toList;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -29,8 +27,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.toList;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
+
+import io.micrometer.api.instrument.Tags;
+import io.micrometer.core.instrument.MultiGauge.Row;
+import io.micrometer.core.instrument.config.MeterFilter;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
 class MultiGaugeTest {
     private static final Color RED = new Color("red", "0xff0000");

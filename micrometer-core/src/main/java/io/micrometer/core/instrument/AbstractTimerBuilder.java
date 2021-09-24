@@ -15,12 +15,14 @@
  */
 package io.micrometer.core.instrument;
 
-import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
-import io.micrometer.core.instrument.distribution.pause.PauseDetector;
-import io.micrometer.core.lang.Nullable;
-
 import java.time.Duration;
 import java.util.Arrays;
+
+import io.micrometer.api.instrument.Tag;
+import io.micrometer.api.instrument.Tags;
+import io.micrometer.api.lang.Nullable;
+import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
+import io.micrometer.core.instrument.distribution.pause.PauseDetector;
 
 /**
  * Base builder for {@link Timer}.

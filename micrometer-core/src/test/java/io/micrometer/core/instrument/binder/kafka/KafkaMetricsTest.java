@@ -19,7 +19,7 @@ import io.micrometer.core.Issue;
 import io.micrometer.core.instrument.Measurement;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Tag;
+import io.micrometer.api.instrument.Tag;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.apache.kafka.common.Metric;
 import org.apache.kafka.common.MetricName;

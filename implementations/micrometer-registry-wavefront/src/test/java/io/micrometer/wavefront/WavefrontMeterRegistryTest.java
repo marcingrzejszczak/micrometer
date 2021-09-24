@@ -21,10 +21,10 @@ import com.wavefront.sdk.common.clients.WavefrontClient;
 import com.wavefront.sdk.entities.histograms.HistogramGranularity;
 import com.wavefront.sdk.entities.histograms.WavefrontHistogramImpl;
 import io.micrometer.core.Issue;
-import io.micrometer.core.instrument.Measurement;
+import io.micrometer.api.instrument.Measurement;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MockClock;
-import io.micrometer.core.instrument.Statistic;
+import io.micrometer.api.instrument.Statistic;
 import io.micrometer.core.instrument.config.validate.ValidationException;
 import org.junit.jupiter.api.Test;
 

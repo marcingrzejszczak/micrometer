@@ -15,9 +15,9 @@
  */
 package io.micrometer.core.instrument.distribution;
 
-import io.micrometer.core.instrument.Clock;
+import io.micrometer.api.instrument.Clock;
 import io.micrometer.core.instrument.config.InvalidConfigurationException;
-import io.micrometer.core.lang.Nullable;
+import io.micrometer.api.lang.Nullable;
 
 import java.io.PrintStream;
 import java.lang.reflect.Array;

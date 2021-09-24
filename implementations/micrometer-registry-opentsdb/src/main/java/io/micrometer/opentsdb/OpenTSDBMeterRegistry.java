@@ -15,6 +15,7 @@
  */
 package io.micrometer.opentsdb;
 
+import io.micrometer.api.instrument.*;
 import io.micrometer.core.instrument.*;
 import io.micrometer.core.instrument.cumulative.CumulativeCounter;
 import io.micrometer.core.instrument.cumulative.CumulativeFunctionCounter;
@@ -27,13 +28,13 @@ import io.micrometer.core.instrument.distribution.pause.PauseDetector;
 import io.micrometer.core.instrument.internal.DefaultGauge;
 import io.micrometer.core.instrument.internal.DefaultMeter;
 import io.micrometer.core.instrument.internal.CumulativeHistogramLongTaskTimer;
-import io.micrometer.core.instrument.push.PushMeterRegistry;
+import io.micrometer.api.instrument.push.PushMeterRegistry;
 import io.micrometer.core.instrument.util.DoubleFormat;
 import io.micrometer.core.instrument.util.MeterPartition;
 import io.micrometer.core.instrument.util.NamedThreadFactory;
 import io.micrometer.core.ipc.http.HttpSender;
 import io.micrometer.core.ipc.http.HttpUrlConnectionSender;
-import io.micrometer.core.lang.Nullable;
+import io.micrometer.api.lang.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

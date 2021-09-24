@@ -16,11 +16,12 @@
 
 package io.micrometer.dynatrace.v2;
 
+import io.micrometer.api.instrument.*;
 import io.micrometer.core.instrument.*;
 import io.micrometer.core.ipc.http.HttpSender;
-import io.micrometer.core.util.internal.logging.LogEvent;
-import io.micrometer.core.util.internal.logging.MockLogger;
-import io.micrometer.core.util.internal.logging.MockLoggerFactory;
+import io.micrometer.api.util.internal.logging.LogEvent;
+import io.micrometer.api.util.internal.logging.MockLogger;
+import io.micrometer.api.util.internal.logging.MockLoggerFactory;
 import io.micrometer.dynatrace.DynatraceApiVersion;
 import io.micrometer.dynatrace.DynatraceConfig;
 import io.micrometer.dynatrace.DynatraceMeterRegistry;
@@ -39,7 +40,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import static io.micrometer.core.instrument.MockClock.clock;
-import static io.micrometer.core.util.internal.logging.InternalLogLevel.ERROR;
+import static io.micrometer.api.util.internal.logging.InternalLogLevel.ERROR;
 import static java.lang.Double.NaN;
 import static java.lang.Double.POSITIVE_INFINITY;
 import static java.lang.Double.NEGATIVE_INFINITY;

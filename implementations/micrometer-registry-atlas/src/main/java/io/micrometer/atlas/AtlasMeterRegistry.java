@@ -23,6 +23,7 @@ import com.netflix.spectator.api.histogram.PercentileTimer;
 import com.netflix.spectator.api.patterns.PolledMeter;
 import com.netflix.spectator.atlas.AtlasConfig;
 import com.netflix.spectator.atlas.AtlasRegistry;
+import io.micrometer.api.instrument.*;
 import io.micrometer.core.instrument.*;
 import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
 import io.micrometer.core.instrument.distribution.HistogramGauges;
@@ -33,7 +34,7 @@ import io.micrometer.core.instrument.internal.DefaultMeter;
 import io.micrometer.core.instrument.step.StepFunctionCounter;
 import io.micrometer.core.instrument.step.StepFunctionTimer;
 import io.micrometer.core.instrument.util.DoubleFormat;
-import io.micrometer.core.lang.Nullable;
+import io.micrometer.api.lang.Nullable;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -187,7 +188,7 @@ public class AtlasMeterRegistry extends MeterRegistry {
     }
 
     @Override
-    protected Meter newMeter(Meter.Id id, Meter.Type type, Iterable<io.micrometer.core.instrument.Measurement> measurements) {
+    protected Meter newMeter(Meter.Id id, Meter.Type type, Iterable<io.micrometer.api.instrument.Measurement> measurements) {
         Id spectatorId = spectatorId(id);
         com.netflix.spectator.api.AbstractMeter<Id> spectatorMeter = new com.netflix.spectator.api.AbstractMeter<Id>(registry.clock(), spectatorId, spectatorId) {
             @Override

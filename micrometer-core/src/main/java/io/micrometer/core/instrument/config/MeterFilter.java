@@ -15,9 +15,8 @@
  */
 package io.micrometer.core.instrument.config;
 
-import io.micrometer.core.instrument.*;
-import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
-import io.micrometer.core.lang.Nullable;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.StreamSupport.stream;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -27,8 +26,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.StreamSupport.stream;
+import io.micrometer.api.instrument.Tag;
+import io.micrometer.api.instrument.Tags;
+import io.micrometer.api.lang.Nullable;
+import io.micrometer.core.instrument.DistributionSummary;
+import io.micrometer.core.instrument.Meter;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
+import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
 
 /**
  * As requests are made of a {@link MeterRegistry} to create new metrics, allow for filtering out

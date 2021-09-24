@@ -15,21 +15,22 @@
  */
 package io.micrometer.core.aop;
 
-import io.micrometer.core.annotation.Counted;
-import io.micrometer.core.instrument.Counter;
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.search.MeterNotFoundException;
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.junit.jupiter.api.Test;
-import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 
-import static java.util.concurrent.CompletableFuture.supplyAsync;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.junit.jupiter.api.Test;
+import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
+
+import io.micrometer.api.annotation.Counted;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.search.MeterNotFoundException;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
 /**
  * Unit tests for the {@link CountedAspect} aspect.

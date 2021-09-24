@@ -15,10 +15,10 @@
  */
 package io.micrometer.core.instrument.binder.jetty;
 
-import io.micrometer.core.annotation.Incubating;
+import io.micrometer.api.annotation.Incubating;
 import io.micrometer.core.instrument.DistributionSummary;
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Tag;
+import io.micrometer.api.instrument.Tag;
 import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.config.MeterFilter;
 import io.micrometer.core.instrument.internal.OnlyOnceLoggingDenyMeterFilter;

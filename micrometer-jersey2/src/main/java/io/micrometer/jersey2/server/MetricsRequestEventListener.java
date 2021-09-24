@@ -15,20 +15,29 @@
  */
 package io.micrometer.jersey2.server;
 
-import io.micrometer.core.annotation.Timed;
-import io.micrometer.core.instrument.LongTaskTimer;
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Timer;
+import static java.util.Objects.requireNonNull;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.ws.rs.NotFoundException;
+
 import org.glassfish.jersey.server.ContainerRequest;
 import org.glassfish.jersey.server.model.ResourceMethod;
 import org.glassfish.jersey.server.monitoring.RequestEvent;
 import org.glassfish.jersey.server.monitoring.RequestEventListener;
 
-import javax.ws.rs.NotFoundException;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static java.util.Objects.requireNonNull;
+import io.micrometer.api.annotation.Timed;
+import io.micrometer.api.instrument.Sample;
+import io.micrometer.core.instrument.LongTaskTimer;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 
 /**
  * {@link RequestEventListener} recording timings for Jersey server requests.
@@ -38,7 +47,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class MetricsRequestEventListener implements RequestEventListener {
 
-    private final Map<ContainerRequest, Timer.Sample> shortTaskSample = Collections
+    private final Map<ContainerRequest, Sample> shortTaskSample = Collections
         .synchronizedMap(new IdentityHashMap<>());
 
     private final Map<ContainerRequest, Collection<LongTaskTimer.Sample>> longTaskSamples = Collections
@@ -76,7 +85,7 @@ public class MetricsRequestEventListener implements RequestEventListener {
                 timedAnnotations = annotations(event);
 
                 timedAnnotationsOnRequest.put(containerRequest, timedAnnotations);
-                shortTaskSample.put(containerRequest, Timer.start(registry));
+                shortTaskSample.put(containerRequest, Sample.start(registry.config().recorder()));
 
                 List<LongTaskTimer.Sample> longTaskSamples = longTaskTimers(timedAnnotations, event).stream().map(LongTaskTimer::start).collect(Collectors.toList());
                 if (!longTaskSamples.isEmpty()) {
@@ -85,11 +94,11 @@ public class MetricsRequestEventListener implements RequestEventListener {
                 break;
             case FINISHED:
                 timedAnnotations = timedAnnotationsOnRequest.remove(containerRequest);
-                Timer.Sample shortSample = shortTaskSample.remove(containerRequest);
+                Sample shortSample = shortTaskSample.remove(containerRequest);
 
                 if (shortSample != null) {
                     for (Timer timer : shortTimers(timedAnnotations, event)) {
-                        shortSample.stop(timer);
+                        shortSample.stop();
                     }
                 }
 

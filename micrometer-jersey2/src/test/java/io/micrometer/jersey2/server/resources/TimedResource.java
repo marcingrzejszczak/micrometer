@@ -24,7 +24,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import io.micrometer.core.annotation.Timed;
+import io.micrometer.api.annotation.Timed;
 
 /**
  * @author Michael Weirauch

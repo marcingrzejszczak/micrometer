@@ -15,11 +15,12 @@
  */
 package io.micrometer.core.instrument.distribution;
 
-import io.micrometer.core.instrument.Clock;
+import java.io.PrintStream;
+
 import org.HdrHistogram.DoubleHistogram;
 import org.HdrHistogram.DoubleRecorder;
 
-import java.io.PrintStream;
+import io.micrometer.api.instrument.Clock;
 
 /**
  * A histogram implementation that supports the computation of percentiles by Micrometer for

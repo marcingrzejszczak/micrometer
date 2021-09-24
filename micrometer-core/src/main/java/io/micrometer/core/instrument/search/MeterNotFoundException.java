@@ -15,15 +15,24 @@
  */
 package io.micrometer.core.instrument.search;
 
-import io.micrometer.core.instrument.*;
-import io.micrometer.core.lang.Nullable;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
+import io.micrometer.api.instrument.Tag;
+import io.micrometer.api.lang.Nullable;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.DistributionSummary;
+import io.micrometer.core.instrument.FunctionCounter;
+import io.micrometer.core.instrument.FunctionTimer;
+import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.LongTaskTimer;
+import io.micrometer.core.instrument.Meter;
+import io.micrometer.core.instrument.TimeGauge;
+import io.micrometer.core.instrument.Timer;
 
 /**
  * @author Jon Schneider. I promise, this was not a fun class to write. Be glad it wasn't you :)

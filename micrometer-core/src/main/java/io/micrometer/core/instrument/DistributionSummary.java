@@ -15,15 +15,17 @@
  */
 package io.micrometer.core.instrument;
 
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
+
+import io.micrometer.api.instrument.Tag;
+import io.micrometer.api.instrument.Tags;
+import io.micrometer.api.lang.Nullable;
 import io.micrometer.core.instrument.distribution.CountAtBucket;
 import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
 import io.micrometer.core.instrument.distribution.HistogramSupport;
 import io.micrometer.core.instrument.distribution.ValueAtPercentile;
-import io.micrometer.core.lang.Nullable;
-
-import java.time.Duration;
-import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Track the sample distribution of events. An example would be the response sizes for requests

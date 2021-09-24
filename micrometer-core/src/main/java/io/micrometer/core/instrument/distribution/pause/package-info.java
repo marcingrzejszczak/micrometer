@@ -17,5 +17,5 @@
 @NonNullFields
 package io.micrometer.core.instrument.distribution.pause;
 
-import io.micrometer.core.lang.NonNullApi;
-import io.micrometer.core.lang.NonNullFields;
+import io.micrometer.api.lang.NonNullApi;
+import io.micrometer.api.lang.NonNullFields;

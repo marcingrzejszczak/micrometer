@@ -15,17 +15,8 @@
  */
 package io.micrometer.elastic;
 
-import io.micrometer.core.instrument.*;
-import io.micrometer.core.instrument.distribution.HistogramSnapshot;
-import io.micrometer.core.instrument.step.StepMeterRegistry;
-import io.micrometer.core.instrument.util.MeterPartition;
-import io.micrometer.core.instrument.util.NamedThreadFactory;
-import io.micrometer.core.instrument.util.StringUtils;
-import io.micrometer.core.ipc.http.HttpSender;
-import io.micrometer.core.ipc.http.HttpUrlConnectionSender;
-import io.micrometer.core.lang.NonNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static io.micrometer.core.instrument.util.StringEscapeUtils.escapeJson;
+import static java.util.stream.Collectors.joining;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -42,8 +33,28 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static io.micrometer.core.instrument.util.StringEscapeUtils.escapeJson;
-import static java.util.stream.Collectors.joining;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.micrometer.api.instrument.Clock;
+import io.micrometer.api.instrument.Tag;
+import io.micrometer.api.instrument.util.StringUtils;
+import io.micrometer.api.lang.NonNull;
+import io.micrometer.core.instrument.DistributionSummary;
+import io.micrometer.core.instrument.FunctionCounter;
+import io.micrometer.core.instrument.FunctionTimer;
+import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.LongTaskTimer;
+import io.micrometer.core.instrument.Measurement;
+import io.micrometer.core.instrument.Meter;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.TimeGauge;
+import io.micrometer.core.instrument.distribution.HistogramSnapshot;
+import io.micrometer.core.instrument.step.StepMeterRegistry;
+import io.micrometer.core.instrument.util.MeterPartition;
+import io.micrometer.core.instrument.util.NamedThreadFactory;
+import io.micrometer.core.ipc.http.HttpSender;
+import io.micrometer.core.ipc.http.HttpUrlConnectionSender;
 
 /**
  * {@link MeterRegistry} for Elasticsearch.

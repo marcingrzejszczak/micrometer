@@ -21,20 +21,14 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
-import io.micrometer.core.annotation.Incubating;
-import io.micrometer.core.annotation.Timed;
-import io.micrometer.core.event.Recording;
-import io.micrometer.core.event.interval.IntervalEvent;
-import io.micrometer.core.event.interval.IntervalRecording;
-import io.micrometer.core.event.interval.NoOpIntervalRecording;
-import io.micrometer.core.event.interval.SimpleIntervalRecording;
-import io.micrometer.core.event.listener.RecordingListener;
-import io.micrometer.core.event.listener.composite.CompositeContext;
+import io.micrometer.api.annotation.Incubating;
+import io.micrometer.api.annotation.Timed;
+import io.micrometer.api.instrument.Tag;
+import io.micrometer.api.lang.Nullable;
 import io.micrometer.core.instrument.distribution.CountAtBucket;
 import io.micrometer.core.instrument.distribution.HistogramSupport;
 import io.micrometer.core.instrument.distribution.ValueAtPercentile;
 import io.micrometer.core.instrument.distribution.pause.PauseDetector;
-import io.micrometer.core.lang.Nullable;
 
 /**
  * Timer intended to track of a large number of short running events. Example would be something like
@@ -46,33 +40,8 @@ import io.micrometer.core.lang.Nullable;
  */
 public interface Timer extends Meter, HistogramSupport {
 
-    static Sample start(IntervalEvent event, MeterRegistry registry) {
-        return sample(event, registry).start();
-    }
-
-    static Sample sample(IntervalEvent event, MeterRegistry registry) {
-        return new Sample(event, registry);
-    }
-
-    static Sample start(MeterRegistry registry) {
-        return new Sample(() -> "sample", registry); // nope
-    }
-
     static Builder builder(String name) {
         return new Builder(name);
-    }
-
-    default void setMeterRegistry(MeterRegistry meterRegistry) {
-
-    }
-
-    @Nullable
-    default MeterRegistry getMeterRegistry() {
-        return null;
-    }
-
-    default Sample toSample(IntervalEvent event) {
-        return start(event, getMeterRegistry());
     }
 
     /**
@@ -262,133 +231,6 @@ public interface Timer extends Meter, HistogramSupport {
      */
     TimeUnit baseTimeUnit();
 
-    class Sample implements Recording<IntervalEvent, Sample>, AutoCloseable {
-        private static final IntervalRecording NOOP_RECORDING = new NoOpIntervalRecording();
-        private final IntervalRecording recording;
-        private final MeterRegistry registry;
-
-        private Timer timer;
-
-        Sample(IntervalEvent event, MeterRegistry registry) {
-            this.registry = registry;
-            RecordingListener<CompositeContext> listener = registry.config().recordingListener();
-            if (listener != null) {
-                recording = new SimpleIntervalRecording(event, listener, registry.config().clock());
-            }
-            else {
-                recording = NOOP_RECORDING;
-            }
-            listener.onCreate(recording);
-            registry.setCurrentRecording(recording);
-        }
-
-        public void setTimer(Timer timer) {
-            this.timer = timer;
-        }
-
-        @Override
-        public IntervalEvent getEvent() {
-            return recording.getEvent();
-        }
-
-        @Override
-        public String getHighCardinalityName() {
-            return recording.getHighCardinalityName();
-        }
-
-        @Override
-        public Sample setHighCardinalityName(String highCardinalityName) {
-            recording.setHighCardinalityName(highCardinalityName);
-            return this;
-        }
-
-        public Duration getDuration() {
-            return recording.getDuration();
-        }
-
-        public long getStartNanos() {
-            return recording.getStartNanos();
-        }
-
-        public Sample start() {
-            recording.start();
-            return this;
-        }
-
-        public Sample start(long wallTime, long monotonicTime) {
-            recording.start(wallTime, monotonicTime);
-            return this;
-        }
-
-        public long getStopNanos() {
-            return recording.getStopNanos();
-        }
-
-        public long getStartWallTime() {
-            return recording.getStartWallTime();
-        }
-
-        public void stop() {
-            long durationNs = getDuration().toNanos();
-            if (timer != null) {
-                timer.record(durationNs, TimeUnit.NANOSECONDS); // nope - why?
-            }
-            close();
-        }
-
-        public void stop(long monotonicTime) {
-            recording.stop(monotonicTime);
-        }
-
-        public Sample restore() {
-            recording.restore();
-            return this;
-        }
-
-        @Override
-        public Iterable<Tag> getTags() {
-            return recording.getTags();
-        }
-
-        @Override
-        public Sample tag(Tag tag) {
-            recording.tag(tag);
-            return this;
-        }
-
-        @Nullable
-        public Throwable getError() {
-            return recording.getError();
-        }
-
-        public Sample error(Throwable error) {
-            recording.error(error);
-            return this;
-        }
-
-        public <T> T getContext(RecordingListener<T> listener) {
-            return recording.getContext(listener);
-        }
-
-        @Override
-        public String toString() {
-            return recording.toString();
-        }
-
-        @Override
-        public void close() {
-            recording.close();
-            registry.removeCurrentRecording();
-        }
-
-        public long stop(Timer timer) {
-            long durationNs = getDuration().toNanos();
-            timer.record(durationNs, TimeUnit.NANOSECONDS); // nope - why?
-            close();
-            return durationNs;
-        }
-    }
-
     class ResourceSample extends AbstractTimerBuilder<ResourceSample> implements AutoCloseable {
         private final MeterRegistry registry;
         private final long startTime;
@@ -503,11 +345,9 @@ public interface Timer extends Meter, HistogramSupport {
          */
         public Timer register(MeterRegistry registry) {
             // the base unit for a timer will be determined by the monitoring system implementation
-            Timer timer = registry.timer(new Meter.Id(name, tags, null, description, Type.TIMER),
+            return registry.timer(new Meter.Id(name, tags, null, description, Type.TIMER),
                     distributionConfigBuilder.build(),
                     pauseDetector == null ? registry.config().pauseDetector() : pauseDetector);
-            timer.setMeterRegistry(registry);
-            return timer;
         }
     }
 }

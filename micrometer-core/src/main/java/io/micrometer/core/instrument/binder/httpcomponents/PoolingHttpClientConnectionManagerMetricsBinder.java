@@ -17,10 +17,10 @@ package io.micrometer.core.instrument.binder.httpcomponents;
 
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Tag;
-import io.micrometer.core.instrument.Tags;
+import io.micrometer.api.instrument.Tag;
+import io.micrometer.api.instrument.Tags;
 import io.micrometer.core.instrument.binder.MeterBinder;
-import io.micrometer.core.lang.NonNull;
+import io.micrometer.api.lang.NonNull;
 import org.apache.http.conn.routing.HttpRoute;
 import org.apache.http.pool.ConnPoolControl;
 

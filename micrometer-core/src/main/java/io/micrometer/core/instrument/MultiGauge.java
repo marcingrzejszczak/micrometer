@@ -15,8 +15,8 @@
  */
 package io.micrometer.core.instrument;
 
-import io.micrometer.core.annotation.Incubating;
-import io.micrometer.core.lang.Nullable;
+import static java.util.Collections.emptySet;
+import static java.util.stream.Collectors.toSet;
 
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
@@ -25,8 +25,10 @@ import java.util.function.ToDoubleFunction;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import static java.util.Collections.emptySet;
-import static java.util.stream.Collectors.toSet;
+import io.micrometer.api.annotation.Incubating;
+import io.micrometer.api.instrument.Tag;
+import io.micrometer.api.instrument.Tags;
+import io.micrometer.api.lang.Nullable;
 
 /**
  * @author Jon Schneider

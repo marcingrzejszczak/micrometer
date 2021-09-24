@@ -21,14 +21,15 @@ import java.util.regex.Pattern;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import io.micrometer.core.instrument.Tag;
-import io.micrometer.core.instrument.binder.http.Outcome;
-import io.micrometer.core.instrument.util.StringUtils;
 import org.glassfish.jersey.server.ContainerRequest;
 import org.glassfish.jersey.server.ContainerResponse;
 import org.glassfish.jersey.server.ExtendedUriInfo;
 import org.glassfish.jersey.server.monitoring.RequestEvent;
 import org.glassfish.jersey.uri.UriTemplate;
+
+import io.micrometer.api.instrument.Tag;
+import io.micrometer.api.instrument.util.StringUtils;
+import io.micrometer.core.instrument.binder.http.Outcome;
 
 /**
  * Factory methods for {@link Tag Tags} associated with a request-response exchange that

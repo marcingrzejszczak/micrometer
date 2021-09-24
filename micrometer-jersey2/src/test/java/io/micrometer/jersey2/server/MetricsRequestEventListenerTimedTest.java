@@ -16,8 +16,8 @@
 package io.micrometer.jersey2.server;
 
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Tag;
-import io.micrometer.core.instrument.Tags;
+import io.micrometer.api.instrument.Tag;
+import io.micrometer.api.instrument.Tags;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import io.micrometer.jersey2.server.resources.TimedOnClassResource;
 import io.micrometer.jersey2.server.resources.TimedResource;

@@ -15,7 +15,8 @@
  */
 package io.micrometer.core.instrument;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,8 +24,10 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.junit.jupiter.api.Test;
+
+import io.micrometer.api.instrument.Tag;
+import io.micrometer.api.instrument.Tags;
 
 /**
  * Tests for {@link Tags}.

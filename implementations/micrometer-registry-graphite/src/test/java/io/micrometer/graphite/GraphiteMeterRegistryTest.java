@@ -16,7 +16,7 @@
 package io.micrometer.graphite;
 
 import io.micrometer.core.instrument.MockClock;
-import io.micrometer.core.lang.Nullable;
+import io.micrometer.api.lang.Nullable;
 import io.netty.channel.ChannelOption;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;

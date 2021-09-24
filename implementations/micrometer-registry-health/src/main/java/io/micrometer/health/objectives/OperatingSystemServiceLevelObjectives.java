@@ -15,7 +15,7 @@
  */
 package io.micrometer.health.objectives;
 
-import io.micrometer.core.instrument.binder.system.FileDescriptorMetrics;
+import io.micrometer.api.instrument.binder.system.FileDescriptorMetrics;
 import io.micrometer.health.ServiceLevelObjective;
 
 /**

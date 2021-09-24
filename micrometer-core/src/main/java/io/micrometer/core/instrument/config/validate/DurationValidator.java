@@ -15,9 +15,9 @@
  */
 package io.micrometer.core.instrument.config.validate;
 
-import io.micrometer.core.annotation.Incubating;
-import io.micrometer.core.instrument.util.StringUtils;
-import io.micrometer.core.lang.Nullable;
+import io.micrometer.api.annotation.Incubating;
+import io.micrometer.api.instrument.util.StringUtils;
+import io.micrometer.api.lang.Nullable;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;

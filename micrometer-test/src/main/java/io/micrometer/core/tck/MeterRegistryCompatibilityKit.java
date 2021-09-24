@@ -15,22 +15,27 @@
  */
 package io.micrometer.core.tck;
 
-import io.micrometer.core.instrument.*;
-import io.micrometer.core.instrument.util.TimeUtils;
+import static io.micrometer.core.instrument.MockClock.clock;
+import static java.util.Collections.emptyList;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.time.Duration;
+import java.util.Collections;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.time.Duration;
-import java.util.Collections;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static io.micrometer.core.instrument.MockClock.clock;
-import static java.util.Collections.emptyList;
-import static java.util.Objects.requireNonNull;
-import static org.assertj.core.api.Assertions.assertThat;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.FunctionTimer;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Statistic;
+import io.micrometer.core.instrument.Timer;
+import io.micrometer.core.instrument.util.TimeUtils;
 
 /**
  * Base class for {@link MeterRegistry} compatibility tests.
@@ -126,7 +131,8 @@ public abstract class MeterRegistryCompatibilityKit {
         clock(registry).add(step());
         assertThat(ft.measure())
             .anySatisfy(ms -> {
-                TimeUnit baseUnit = TimeUnit.valueOf(requireNonNull(ft.getId().getBaseUnit()).toUpperCase());
+                    TimeUnit baseUnit = TimeUnit
+                            .valueOf(Objects.requireNonNull(ft.getId().getBaseUnit()).toUpperCase());
                 assertThat(ms.getStatistic()).isEqualTo(Statistic.TOTAL_TIME);
                 assertThat(TimeUtils.convert(ms.getValue(), baseUnit, TimeUnit.MILLISECONDS)).isEqualTo(1);
             });

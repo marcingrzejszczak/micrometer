@@ -16,7 +16,7 @@
 package io.micrometer.statsd;
 
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.binder.MeterBinder;
+import io.micrometer.api.instrument.binder.MeterBinder;
 
 /**
  * @deprecated statsd metrics are no longer available since 1.4.0

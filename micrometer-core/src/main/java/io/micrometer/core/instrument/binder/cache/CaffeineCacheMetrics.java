@@ -15,16 +15,24 @@
  */
 package io.micrometer.core.instrument.binder.cache;
 
-import com.github.benmanes.caffeine.cache.*;
-import com.github.benmanes.caffeine.cache.stats.CacheStats;
-import io.micrometer.core.instrument.*;
-import io.micrometer.core.lang.NonNullApi;
-import io.micrometer.core.lang.NonNullFields;
-import io.micrometer.core.lang.Nullable;
-
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.ToLongFunction;
+
+import com.github.benmanes.caffeine.cache.AsyncCache;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
+import com.github.benmanes.caffeine.cache.stats.CacheStats;
+
+import io.micrometer.api.instrument.Tag;
+import io.micrometer.api.instrument.Tags;
+import io.micrometer.api.lang.NonNullApi;
+import io.micrometer.api.lang.NonNullFields;
+import io.micrometer.api.lang.Nullable;
+import io.micrometer.core.instrument.FunctionCounter;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.TimeGauge;
 
 /**
  * Collect metrics from Caffeine's {@link com.github.benmanes.caffeine.cache.Cache}. {@link CaffeineStatsCounter} is an

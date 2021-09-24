@@ -15,12 +15,16 @@
  */
 package io.micrometer.core.instrument.binder.jetty;
 
-import io.micrometer.core.instrument.*;
-import io.micrometer.core.instrument.binder.BaseUnits;
-import io.micrometer.core.instrument.binder.http.DefaultHttpServletRequestTagsProvider;
-import io.micrometer.core.instrument.binder.http.HttpServletRequestTagsProvider;
-import io.micrometer.core.lang.NonNullApi;
-import io.micrometer.core.lang.NonNullFields;
+import java.io.IOException;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.servlet.AsyncEvent;
+import javax.servlet.AsyncListener;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.eclipse.jetty.http.HttpStatus;
 import org.eclipse.jetty.server.AsyncContextEvent;
 import org.eclipse.jetty.server.Handler;
@@ -30,14 +34,17 @@ import org.eclipse.jetty.server.handler.HandlerWrapper;
 import org.eclipse.jetty.util.FutureCallback;
 import org.eclipse.jetty.util.component.Graceful;
 
-import javax.servlet.AsyncEvent;
-import javax.servlet.AsyncListener;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicInteger;
+import io.micrometer.api.instrument.Sample;
+import io.micrometer.api.instrument.Tag;
+import io.micrometer.api.lang.NonNullApi;
+import io.micrometer.api.lang.NonNullFields;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.LongTaskTimer;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.binder.BaseUnits;
+import io.micrometer.core.instrument.binder.http.DefaultHttpServletRequestTagsProvider;
+import io.micrometer.core.instrument.binder.http.HttpServletRequestTagsProvider;
 
 /**
  * Adapted from Jetty's <a href="https://github.com/eclipse/jetty.project/blob/jetty-9.4.x/jetty-server/src/main/java/org/eclipse/jetty/server/handler/StatisticsHandler.java">StatisticsHandler</a>.
@@ -100,7 +107,7 @@ public class TimedHandler extends HandlerWrapper implements Graceful {
 
     @Override
     public void handle(String path, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        Timer.Sample sample = Timer.start(registry);
+        Sample sample = Sample.start(registry.config().recorder());
         LongTaskTimer.Sample requestSample;
 
         HttpChannelState state = baseRequest.getHttpChannelState();
@@ -133,11 +140,11 @@ public class TimedHandler extends HandlerWrapper implements Graceful {
                     asyncWaits.incrementAndGet();
                 }
             } else if (state.isInitial()) {
-                sample.stop(Timer.builder("jetty.server.requests")
-                        .description("HTTP requests to the Jetty server")
-                        .tags(tagsProvider.getTags(request, response))
-                        .tags(tags)
-                        .register(registry));
+                sample.setLowCardinalityName("jetty.server.requests")
+                .setDescription("HTTP requests to the Jetty server")
+                .tags(tagsProvider.getTags(request, response))
+                .tags(tags)
+                        .stop();
 
                 requestSample.stop();
 
@@ -192,15 +199,15 @@ public class TimedHandler extends HandlerWrapper implements Graceful {
         HttpChannelState state = ((AsyncContextEvent) event).getHttpChannelState();
 
         Request request = state.getBaseRequest();
-        Timer.Sample sample = (Timer.Sample) request.getAttribute(SAMPLE_REQUEST_TIMER_ATTRIBUTE);
+        Sample sample = (Sample) request.getAttribute(SAMPLE_REQUEST_TIMER_ATTRIBUTE);
         LongTaskTimer.Sample lttSample = (LongTaskTimer.Sample) request.getAttribute(SAMPLE_REQUEST_LONG_TASK_TIMER_ATTRIBUTE);
 
         if (sample != null) {
-            sample.stop(Timer.builder("jetty.server.requests")
-                    .description("HTTP requests to the Jetty server")
+            sample.setLowCardinalityName("jetty.server.requests")
+                    .setDescription("HTTP requests to the Jetty server")
                     .tags(tagsProvider.getTags(request, request.getResponse()))
                     .tags(tags)
-                    .register(registry));
+                    .stop();
 
             lttSample.stop();
         }

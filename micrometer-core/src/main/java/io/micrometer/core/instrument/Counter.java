@@ -15,9 +15,11 @@
  */
 package io.micrometer.core.instrument;
 
-import io.micrometer.core.lang.Nullable;
-
 import java.util.Collections;
+
+import io.micrometer.api.instrument.Tag;
+import io.micrometer.api.instrument.Tags;
+import io.micrometer.api.lang.Nullable;
 
 /**
  * Counters monitor monotonically increasing values. Counters may never be reset to a lesser value. If you

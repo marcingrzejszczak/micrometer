@@ -15,7 +15,7 @@
  */
 package io.micrometer.boot2.samples.components;
 
-import io.micrometer.core.annotation.Timed;
+import io.micrometer.api.annotation.Timed;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import org.springframework.web.bind.annotation.GetMapping;
