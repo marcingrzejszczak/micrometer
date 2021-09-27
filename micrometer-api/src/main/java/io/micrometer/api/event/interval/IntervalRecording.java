@@ -19,6 +19,7 @@ package io.micrometer.api.event.interval;
 import java.time.Duration;
 
 import io.micrometer.api.event.Recording;
+import io.micrometer.api.event.instant.InstantEvent;
 import io.micrometer.api.lang.Nullable;
 
 /**
@@ -86,6 +87,13 @@ public interface IntervalRecording<T> extends Recording<IntervalEvent, IntervalR
      * @return itself
      */
     IntervalRecording<T> start(long wallTime, long monotonicTime);
+
+    /**
+     * Signals that an {@link InstantEvent} happened.
+     * 
+     * @param event instant event that happened
+     */
+    void recordInstant(InstantEvent event);
 
     /**
      * Signals the end of an {@link IntervalEvent}.

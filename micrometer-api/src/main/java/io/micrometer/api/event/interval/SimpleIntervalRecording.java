@@ -21,6 +21,8 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import io.micrometer.api.event.instant.InstantEvent;
+import io.micrometer.api.event.instant.SimpleInstantRecording;
 import io.micrometer.api.event.listener.RecordingListener;
 import io.micrometer.api.instrument.Clock;
 import io.micrometer.api.instrument.Tag;
@@ -194,6 +196,11 @@ public class SimpleIntervalRecording<T> implements IntervalRecording<T> {
         return "{" + "event=" + this.event.getLowCardinalityName() + ", highCardinalityName=" + this.highCardinalityName
                 + ", duration=" + this.duration.toMillis() + "ms" + ", tags=" + this.tags + ", error=" + this.error
                 + '}';
+    }
+
+    @Override
+    public void recordInstant(InstantEvent event) {
+        new SimpleInstantRecording(event, listener, clock).recordInstant();
     }
 
 }

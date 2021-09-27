@@ -18,6 +18,7 @@ package io.micrometer.api.event.listener.composite;
 
 import java.time.Duration;
 
+import io.micrometer.api.event.instant.InstantEvent;
 import io.micrometer.api.event.interval.IntervalEvent;
 import io.micrometer.api.event.interval.IntervalRecording;
 import io.micrometer.api.event.listener.RecordingListener;
@@ -138,5 +139,10 @@ class IntervalRecordingView<T> implements IntervalRecording<T> {
     @Override
     public String toString() {
         return this.delegate.toString();
+    }
+
+    @Override
+    public void recordInstant(InstantEvent event) {
+        this.delegate.recordInstant(event);
     }
 }

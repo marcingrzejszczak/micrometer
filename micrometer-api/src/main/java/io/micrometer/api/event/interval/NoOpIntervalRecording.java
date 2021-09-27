@@ -19,6 +19,7 @@ package io.micrometer.api.event.interval;
 import java.time.Duration;
 import java.util.Collections;
 
+import io.micrometer.api.event.instant.InstantEvent;
 import io.micrometer.api.instrument.Tag;
 
 /**
@@ -140,6 +141,10 @@ public class NoOpIntervalRecording<T> implements IntervalRecording<T> {
     @Override
     public IntervalRecording<T> setHighCardinalityName(String highCardinalityName) {
         return this;
+    }
+
+    @Override
+    public void recordInstant(InstantEvent event) {
     }
 
 }

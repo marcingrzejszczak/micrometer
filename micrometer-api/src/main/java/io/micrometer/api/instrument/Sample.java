@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.util.Objects;
 
 import io.micrometer.api.event.Recorder;
+import io.micrometer.api.event.instant.InstantEvent;
 import io.micrometer.api.event.interval.IntervalEvent;
 import io.micrometer.api.event.interval.IntervalRecording;
 import io.micrometer.api.instrument.util.StringUtils;
@@ -218,5 +219,10 @@ public class Sample implements IntervalRecording<Sample>, AutoCloseable {
     public Sample setLowCardinalityName(String lowCardinalityName) {
         this.lowCardinalityName = lowCardinalityName;
         return this;
+    }
+
+    @Override
+    public void recordInstant(InstantEvent event) {
+        this.recording.recordInstant(event);
     }
 }
