@@ -34,23 +34,23 @@ public class NoOpRecordingListener implements RecordingListener<Object> {
     }
 
     @Override
-    public void onCreate(IntervalRecording<Object> intervalRecording) {
+    public void onCreate(IntervalRecording intervalRecording) {
     }
 
     @Override
-    public void onStart(IntervalRecording<Object> intervalRecording) {
+    public void onStart(IntervalRecording intervalRecording) {
     }
 
     @Override
-    public void onStop(IntervalRecording<Object> intervalRecording) {
+    public void onStop(IntervalRecording intervalRecording) {
     }
 
     @Override
-    public void onError(IntervalRecording<Object> intervalRecording) {
+    public void onError(IntervalRecording intervalRecording) {
     }
 
     @Override
-    public void onRestore(IntervalRecording<Object> intervalRecording) {
+    public void onRestore(IntervalRecording intervalRecording) {
     }
 
     @Override

@@ -31,7 +31,7 @@ class RecordingSample {
         );
         Recorder<?> recorder = new SimpleRecorder(listener, Clock.SYSTEM, Collections.emptyList());
 
-        IntervalRecording<?> recording = recorder.recordingFor((IntervalEvent) () -> "testEvent")
+        IntervalRecording recording = recorder.recordingFor((IntervalEvent) () -> "testEvent")
                 .tag(Tag.of("a", "b"))
                 .tag(Tag.of("c", UUID.randomUUID().toString(), Cardinality.HIGH))
                 .start();

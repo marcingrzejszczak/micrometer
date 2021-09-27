@@ -56,39 +56,39 @@ public class AllMatchingCompositeRecordingListener implements CompositeRecording
     }
 
     @Override
-    public void onCreate(IntervalRecording<CompositeContext> intervalRecording) {
+    public void onCreate(IntervalRecording intervalRecording) {
         getAllApplicableListeners(intervalRecording)
-                .forEach(listener -> listener.onCreate(new IntervalRecordingView<>(listener, intervalRecording)));
+                .forEach(listener -> listener.onCreate(intervalRecording));
     }
 
     @Override
-    public void onStart(IntervalRecording<CompositeContext> intervalRecording) {
+    public void onStart(IntervalRecording intervalRecording) {
         getAllApplicableListeners(intervalRecording)
-                .forEach(listener -> listener.onStart(new IntervalRecordingView<>(listener, intervalRecording)));
+                .forEach(listener -> listener.onStart(intervalRecording));
     }
 
     @NonNull
     private Stream<RecordingListener<?>> getAllApplicableListeners(
-            IntervalRecording<CompositeContext> intervalRecording) {
+            IntervalRecording intervalRecording) {
         return this.listeners.stream().filter(listener -> listener.isApplicable(intervalRecording));
     }
 
     @Override
-    public void onStop(IntervalRecording<CompositeContext> intervalRecording) {
+    public void onStop(IntervalRecording intervalRecording) {
         getAllApplicableListeners(intervalRecording)
-                .forEach(listener -> listener.onStop(new IntervalRecordingView<>(listener, intervalRecording)));
+                .forEach(listener -> listener.onStop(intervalRecording));
     }
 
     @Override
-    public void onError(IntervalRecording<CompositeContext> intervalRecording) {
+    public void onError(IntervalRecording intervalRecording) {
         getAllApplicableListeners(intervalRecording)
-                .forEach(listener -> listener.onError(new IntervalRecordingView<>(listener, intervalRecording)));
+                .forEach(listener -> listener.onError(intervalRecording));
     }
 
     @Override
-    public void onRestore(IntervalRecording<CompositeContext> intervalRecording) {
+    public void onRestore(IntervalRecording intervalRecording) {
         getAllApplicableListeners(intervalRecording)
-                .forEach(listener -> listener.onRestore(new IntervalRecordingView<>(listener, intervalRecording)));
+                .forEach(listener -> listener.onRestore(intervalRecording));
     }
 
     @Override

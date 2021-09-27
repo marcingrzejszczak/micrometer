@@ -7,6 +7,7 @@ import io.micrometer.api.event.Recorder;
 import io.micrometer.api.event.instant.InstantEvent;
 import io.micrometer.api.event.interval.IntervalEvent;
 import io.micrometer.api.event.interval.IntervalRecording;
+import io.micrometer.api.event.listener.RecordingListener;
 import io.micrometer.api.instrument.util.StringUtils;
 import io.micrometer.api.lang.NonNull;
 import io.micrometer.api.lang.Nullable;
@@ -15,7 +16,7 @@ import io.micrometer.api.lang.Nullable;
  * TODO: Maybe this should go away at all! Just use IntervalRecording instead?
  * TODO: Add a recordInstant on IntervalRecording
  */
-public class Sample implements IntervalRecording<Sample>, AutoCloseable {
+public class Sample implements IntervalRecording, AutoCloseable {
 
     /**
      * Creates the sample.
@@ -85,7 +86,7 @@ public class Sample implements IntervalRecording<Sample>, AutoCloseable {
 
     private final Recorder<?> recorder;
 
-    private final IntervalRecording<?> recording;
+    private final IntervalRecording recording;
 
     private String description;
 
@@ -206,11 +207,6 @@ public class Sample implements IntervalRecording<Sample>, AutoCloseable {
         recorder.getRecordingCustomizers().forEach(rc -> rc.customize(recording));
     }
 
-    @Override
-    public Sample getContext() {
-        return this;
-    }
-
     public Sample setDescription(String description) {
         this.description = description;
         return this;
@@ -224,5 +220,10 @@ public class Sample implements IntervalRecording<Sample>, AutoCloseable {
     @Override
     public void recordInstant(InstantEvent event) {
         this.recording.recordInstant(event);
+    }
+
+    @Override
+    public <T> T getContext(RecordingListener<T> listener) {
+        return null;
     }
 }

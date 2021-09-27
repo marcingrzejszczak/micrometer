@@ -40,7 +40,7 @@ public interface Recorder<T> {
      * @param event an {@link IntervalEvent} to create a recording for
      * @return an {@link IntervalRecording} for the provided {@link IntervalEvent}
      */
-    IntervalRecording<T> recordingFor(IntervalEvent event);
+    IntervalRecording recordingFor(IntervalEvent event);
 
     /**
      * Creates a recording for an {@link InstantEvent}.
@@ -69,14 +69,14 @@ public interface Recorder<T> {
      * 
      * @return current recording or {@code null} when not present
      */
-    IntervalRecording<T> getCurrentRecording();
+    IntervalRecording getCurrentRecording();
 
     /**
      * Sets the current recording.
      * 
      * @param recording current recording to set
      */
-    void setCurrentRecording(IntervalRecording<T> recording);
+    void setCurrentRecording(IntervalRecording recording);
 
     /**
      * Returns all registered recording customizers.

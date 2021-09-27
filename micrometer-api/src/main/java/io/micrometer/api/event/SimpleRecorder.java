@@ -30,6 +30,7 @@ import io.micrometer.api.event.interval.IntervalRecording;
 import io.micrometer.api.event.interval.NoOpIntervalRecording;
 import io.micrometer.api.event.interval.SimpleIntervalRecording;
 import io.micrometer.api.event.listener.RecordingListener;
+import io.micrometer.api.event.listener.composite.CompositeContext;
 import io.micrometer.api.instrument.Clock;
 
 /**
@@ -41,7 +42,7 @@ import io.micrometer.api.instrument.Clock;
  */
 public class SimpleRecorder<T> implements Recorder<T> {
 
-    private final RecordingListener<T> listener;
+    private final RecordingListener<CompositeContext> listener;
 
     private final Clock clock;
 
@@ -49,9 +50,9 @@ public class SimpleRecorder<T> implements Recorder<T> {
 
     private volatile boolean enabled;
 
-    private final ThreadLocal<IntervalRecording<T>> threadLocal = new ThreadLocal<>();
+    private final ThreadLocal<IntervalRecording> threadLocal = new ThreadLocal<>();
 
-    private final Deque<IntervalRecording<T>> recordings = new LinkedBlockingDeque<>();
+    private final Deque<IntervalRecording> recordings = new LinkedBlockingDeque<>();
 
     /**
      * Create a new {@link SimpleRecorder}.
@@ -59,7 +60,7 @@ public class SimpleRecorder<T> implements Recorder<T> {
      * @param listener the listener that needs to be notified about the recordings
      * @param clock    the clock to be used
      */
-    public SimpleRecorder(RecordingListener<T> listener, Clock clock, List<RecordingCustomizer> customizers) {
+    public SimpleRecorder(RecordingListener<CompositeContext> listener, Clock clock, List<RecordingCustomizer> customizers) {
         this.listener = listener;
         this.clock = clock;
         this.enabled = true;
@@ -67,10 +68,10 @@ public class SimpleRecorder<T> implements Recorder<T> {
     }
 
     @Override
-    public IntervalRecording<T> recordingFor(IntervalEvent event) {
-        IntervalRecording<T> recording = this.enabled
-                ? new SimpleIntervalRecording<>(event, this.listener, this.clock, this::remove)
-                : new NoOpIntervalRecording<>();
+    public IntervalRecording recordingFor(IntervalEvent event) {
+        IntervalRecording recording = this.enabled
+                ? new SimpleIntervalRecording(event, this.listener, this.clock, this::remove)
+                : new NoOpIntervalRecording();
         setCurrentRecording(recording);
         return recording;
     }
@@ -91,11 +92,11 @@ public class SimpleRecorder<T> implements Recorder<T> {
     }
 
     @Override
-    public void setCurrentRecording(IntervalRecording<T> recording) {
+    public void setCurrentRecording(IntervalRecording recording) {
         if (!this.enabled) {
             return;
         }
-        IntervalRecording<T> old = this.threadLocal.get();
+        IntervalRecording old = this.threadLocal.get();
         if (old != null) {
             this.recordings.addFirst(old);
         }
@@ -109,7 +110,7 @@ public class SimpleRecorder<T> implements Recorder<T> {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public IntervalRecording<T> getCurrentRecording() {
+    public IntervalRecording getCurrentRecording() {
         if (!this.enabled) {
             return null;
         }
@@ -129,7 +130,7 @@ public class SimpleRecorder<T> implements Recorder<T> {
             return;
         }
         try {
-            IntervalRecording<T> first = this.recordings.removeFirst();
+            IntervalRecording first = this.recordings.removeFirst();
             this.threadLocal.set(first);
         } catch (NoSuchElementException ex) {
         }

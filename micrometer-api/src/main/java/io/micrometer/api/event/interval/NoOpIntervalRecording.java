@@ -20,6 +20,7 @@ import java.time.Duration;
 import java.util.Collections;
 
 import io.micrometer.api.event.instant.InstantEvent;
+import io.micrometer.api.event.listener.RecordingListener;
 import io.micrometer.api.instrument.Tag;
 
 /**
@@ -30,7 +31,7 @@ import io.micrometer.api.instrument.Tag;
  * @since 6.0.0
  * @param <T> context type
  */
-public class NoOpIntervalRecording<T> implements IntervalRecording<T> {
+public class NoOpIntervalRecording implements IntervalRecording {
 
     @SuppressWarnings("rawtypes")
     public static NoOpIntervalRecording INSTANCE = new NoOpIntervalRecording();
@@ -57,7 +58,7 @@ public class NoOpIntervalRecording<T> implements IntervalRecording<T> {
     }
 
     @Override
-    public IntervalRecording<T> tag(Tag tag) {
+    public IntervalRecording tag(Tag tag) {
         return this;
     }
 
@@ -82,17 +83,17 @@ public class NoOpIntervalRecording<T> implements IntervalRecording<T> {
     }
 
     @Override
-    public IntervalRecording<T> start() {
+    public IntervalRecording start() {
         return this;
     }
 
     @Override
-    public IntervalRecording<T> restore() {
+    public IntervalRecording restore() {
         return this;
     }
 
     @Override
-    public IntervalRecording<T> start(long wallTime, long monotonicTime) {
+    public IntervalRecording start(long wallTime, long monotonicTime) {
         return this;
     }
 
@@ -110,13 +111,8 @@ public class NoOpIntervalRecording<T> implements IntervalRecording<T> {
     }
 
     @Override
-    public IntervalRecording<T> error(Throwable error) {
+    public IntervalRecording error(Throwable error) {
         return this;
-    }
-
-    @Override
-    public T getContext() {
-        return null;
     }
 
     @Override
@@ -139,12 +135,17 @@ public class NoOpIntervalRecording<T> implements IntervalRecording<T> {
     }
 
     @Override
-    public IntervalRecording<T> setHighCardinalityName(String highCardinalityName) {
+    public IntervalRecording setHighCardinalityName(String highCardinalityName) {
         return this;
     }
 
     @Override
     public void recordInstant(InstantEvent event) {
+    }
+
+    @Override
+    public <T> T getContext(RecordingListener<T> listener) {
+        return null;
     }
 
 }

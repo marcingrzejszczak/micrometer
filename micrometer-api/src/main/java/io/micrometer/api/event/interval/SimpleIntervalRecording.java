@@ -24,6 +24,7 @@ import java.util.Set;
 import io.micrometer.api.event.instant.InstantEvent;
 import io.micrometer.api.event.instant.SimpleInstantRecording;
 import io.micrometer.api.event.listener.RecordingListener;
+import io.micrometer.api.event.listener.composite.CompositeContext;
 import io.micrometer.api.instrument.Clock;
 import io.micrometer.api.instrument.Tag;
 
@@ -35,13 +36,13 @@ import io.micrometer.api.instrument.Tag;
  * @since 6.0.0
  * @param <T> context type
  */
-public class SimpleIntervalRecording<T> implements IntervalRecording<T> {
+public class SimpleIntervalRecording implements IntervalRecording {
 
     private final IntervalEvent event;
 
-    private final RecordingListener<T> listener;
+    private final RecordingListener<CompositeContext> listener;
 
-    private final T context;
+    private final CompositeContext context;
 
     private final Clock clock;
 
@@ -70,7 +71,7 @@ public class SimpleIntervalRecording<T> implements IntervalRecording<T> {
      * @param clock           the clock to be used
      * @param closingCallback callback to be called upon closing of the recording
      */
-    public SimpleIntervalRecording(IntervalEvent event, RecordingListener<T> listener, Clock clock,
+    public SimpleIntervalRecording(IntervalEvent event, RecordingListener<CompositeContext> listener, Clock clock,
             Runnable closingCallback) {
         this.event = event;
         this.highCardinalityName = event.getLowCardinalityName();
@@ -88,7 +89,7 @@ public class SimpleIntervalRecording<T> implements IntervalRecording<T> {
      * @param listener the listener that needs to be notified about the recordings
      * @param clock    the clock to be used
      */
-    SimpleIntervalRecording(IntervalEvent event, RecordingListener<T> listener, Clock clock) {
+    SimpleIntervalRecording(IntervalEvent event, RecordingListener<CompositeContext> listener, Clock clock) {
         this(event, listener, clock, () -> {
         });
     }
@@ -104,7 +105,7 @@ public class SimpleIntervalRecording<T> implements IntervalRecording<T> {
     }
 
     @Override
-    public IntervalRecording<T> setHighCardinalityName(String highCardinalityName) {
+    public IntervalRecording setHighCardinalityName(String highCardinalityName) {
         this.highCardinalityName = highCardinalityName;
         return this;
     }
@@ -120,18 +121,18 @@ public class SimpleIntervalRecording<T> implements IntervalRecording<T> {
     }
 
     @Override
-    public IntervalRecording<T> start() {
+    public IntervalRecording start() {
         return start(this.clock.wallTime(), this.clock.monotonicTime());
     }
 
     @Override
-    public IntervalRecording<T> restore() {
+    public IntervalRecording restore() {
         this.listener.onRestore(this);
         return this;
     }
 
     @Override
-    public IntervalRecording<T> start(long wallTime, long monotonicTime) {
+    public IntervalRecording start(long wallTime, long monotonicTime) {
         this.startWallTime = wallTime;
         this.started = monotonicTime;
         this.listener.onStart(this);
@@ -166,7 +167,7 @@ public class SimpleIntervalRecording<T> implements IntervalRecording<T> {
     }
 
     @Override
-    public IntervalRecording<T> tag(Tag tag) {
+    public IntervalRecording tag(Tag tag) {
         this.tags.add(tag);
         return this;
     }
@@ -177,18 +178,18 @@ public class SimpleIntervalRecording<T> implements IntervalRecording<T> {
     }
 
     @Override
-    public IntervalRecording<T> error(Throwable error) {
+    public <T> T getContext(RecordingListener<T> listener) {
+        return this.context.byListener(listener);
+    }
+
+    @Override
+    public IntervalRecording error(Throwable error) {
         if (this.error != null) {
             return this;
         }
         this.error = error;
         this.listener.onError(this);
         return this;
-    }
-
-    @Override
-    public T getContext() {
-        return this.context;
     }
 
     @Override

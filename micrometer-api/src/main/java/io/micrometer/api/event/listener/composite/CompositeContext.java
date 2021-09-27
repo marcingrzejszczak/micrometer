@@ -17,7 +17,7 @@
 package io.micrometer.api.event.listener.composite;
 
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,11 +30,10 @@ import io.micrometer.api.event.listener.RecordingListener;
  *
  * @author Jonatan Ivanov
  * @since 6.0.0
- * @see AllMatchingCompositeRecordingListener
  */
 public class CompositeContext {
 
-    private final Map<RecordingListener<?>, Object> contexts = new HashMap<>();
+    private final Map<RecordingListener<?>, Object> contexts = new IdentityHashMap<>();
 
     CompositeContext(RecordingListener<?>... listeners) {
         this(Arrays.asList(listeners));
@@ -57,7 +56,7 @@ public class CompositeContext {
     }
 
     @SuppressWarnings("unchecked")
-    <T> T byListener(RecordingListener<T> listener) {
+    public <T> T byListener(RecordingListener<T> listener) {
         return (T) this.contexts.get(listener);
     }
 
