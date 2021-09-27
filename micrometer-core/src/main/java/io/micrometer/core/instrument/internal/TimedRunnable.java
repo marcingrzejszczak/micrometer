@@ -15,6 +15,7 @@
  */
 package io.micrometer.core.instrument.internal;
 
+import io.micrometer.api.instrument.Sample;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 
@@ -26,24 +27,24 @@ class TimedRunnable implements Runnable {
     private final Timer executionTimer;
     private final Timer idleTimer;
     private final Runnable command;
-    private final Timer.Sample idleSample;
+    private final Sample idleSample;
 
     TimedRunnable(MeterRegistry registry, Timer executionTimer, Timer idleTimer, Runnable command) {
         this.registry = registry;
         this.executionTimer = executionTimer;
         this.idleTimer = idleTimer;
         this.command = command;
-        this.idleSample = Timer.start(registry);
+        this.idleSample = Sample.start(registry.config().recorder());
     }
 
     @Override
     public void run() {
-        idleSample.stop(idleTimer);
-        Timer.Sample executionSample = Timer.start(registry);
+        idleSample.stop();
+        Sample executionSample = Sample.start(registry.config().recorder());
         try {
             command.run();
         } finally {
-            executionSample.stop(executionTimer);
+            executionSample.stop();
         }
     }
 }

@@ -69,6 +69,7 @@ public class TimedHandler extends HandlerWrapper implements Graceful {
         }
     };
 
+    // TODO: What do we do with the LongTaskTimer ?
     private final LongTaskTimer openRequests;
     private final Counter asyncDispatches;
     private final Counter asyncExpires;
@@ -108,7 +109,7 @@ public class TimedHandler extends HandlerWrapper implements Graceful {
     @Override
     public void handle(String path, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         Sample sample = Sample.start(registry.config().recorder());
-        LongTaskTimer.Sample requestSample;
+        LongTaskTimer requestSample;
 
         HttpChannelState state = baseRequest.getHttpChannelState();
         if (state.isInitial()) {
@@ -118,7 +119,7 @@ public class TimedHandler extends HandlerWrapper implements Graceful {
         } else {
             asyncDispatches.increment();
             request.setAttribute(SAMPLE_REQUEST_TIMER_ATTRIBUTE, sample);
-            requestSample = (LongTaskTimer.Sample) request.getAttribute(SAMPLE_REQUEST_LONG_TASK_TIMER_ATTRIBUTE);
+            requestSample = (LongTaskTimer) request.getAttribute(SAMPLE_REQUEST_LONG_TASK_TIMER_ATTRIBUTE);
         }
 
         try {
@@ -140,8 +141,8 @@ public class TimedHandler extends HandlerWrapper implements Graceful {
                     asyncWaits.incrementAndGet();
                 }
             } else if (state.isInitial()) {
-                sample.setLowCardinalityName("jetty.server.requests")
-                .setDescription("HTTP requests to the Jetty server")
+                sample.lowCardinalityName("jetty.server.requests")
+                .description("HTTP requests to the Jetty server")
                 .tags(tagsProvider.getTags(request, response))
                 .tags(tags)
                         .stop();
@@ -191,7 +192,7 @@ public class TimedHandler extends HandlerWrapper implements Graceful {
         HttpChannelState state = ((AsyncContextEvent) event).getHttpChannelState();
         Request request = state.getBaseRequest();
 
-        LongTaskTimer.Sample lttSample = (LongTaskTimer.Sample) request.getAttribute(SAMPLE_REQUEST_LONG_TASK_TIMER_ATTRIBUTE);
+        LongTaskSample lttSample = (LongTaskSample) request.getAttribute(SAMPLE_REQUEST_LONG_TASK_TIMER_ATTRIBUTE);
         lttSample.stop();
     }
 
@@ -200,11 +201,11 @@ public class TimedHandler extends HandlerWrapper implements Graceful {
 
         Request request = state.getBaseRequest();
         Sample sample = (Sample) request.getAttribute(SAMPLE_REQUEST_TIMER_ATTRIBUTE);
-        LongTaskTimer.Sample lttSample = (LongTaskTimer.Sample) request.getAttribute(SAMPLE_REQUEST_LONG_TASK_TIMER_ATTRIBUTE);
+        LongTaskSample lttSample = (LongTaskSample) request.getAttribute(SAMPLE_REQUEST_LONG_TASK_TIMER_ATTRIBUTE);
 
         if (sample != null) {
-            sample.setLowCardinalityName("jetty.server.requests")
-                    .setDescription("HTTP requests to the Jetty server")
+            sample.lowCardinalityName("jetty.server.requests")
+                    .description("HTTP requests to the Jetty server")
                     .tags(tagsProvider.getTags(request, request.getResponse()))
                     .tags(tags)
                     .stop();

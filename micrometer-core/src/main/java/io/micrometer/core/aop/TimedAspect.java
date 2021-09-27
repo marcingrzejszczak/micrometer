@@ -207,8 +207,8 @@ public class TimedAspect {
             // builder.publishPercentileHistogram(timed.histogram()).publishPercentiles(timed.percentiles().length
             // == 0 ? null : timed.percentiles()));
             // ->
-            sample.setLowCardinalityName(metricName)
-                    .setDescription(timed.description().isEmpty() ? null : timed.description())
+            sample.lowCardinalityName(metricName)
+                    .description(timed.description().isEmpty() ? null : timed.description())
                     .tags(timed.extraTags())
                     .tags(EXCEPTION_TAG, exceptionClass)
                     .tags(tagsBasedOnJoinPoint.apply(pjp)).stop();
@@ -236,7 +236,7 @@ public class TimedAspect {
 
     private Object processWithLongTaskTimer(ProceedingJoinPoint pjp, Timed timed, String metricName, boolean stopWhenCompleted) throws Throwable {
 
-        Optional<LongTaskTimer.Sample> sample = buildLongTaskTimer(pjp, timed, metricName).map(LongTaskTimer::start);
+        Optional<LongTaskSample> sample = buildLongTaskTimer(pjp, timed, metricName).map(LongTaskTimer::start);
 
         if (stopWhenCompleted) {
             try {
@@ -254,7 +254,7 @@ public class TimedAspect {
         }
     }
 
-    private void stopTimer(LongTaskTimer.Sample sample) {
+    private void stopTimer(LongTaskSample sample) {
         try {
             sample.stop();
         } catch (Exception e) {

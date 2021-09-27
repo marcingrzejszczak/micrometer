@@ -35,11 +35,11 @@ public class CompositeContext {
 
     private final Map<RecordingListener<?>, Object> contexts = new IdentityHashMap<>();
 
-    CompositeContext(RecordingListener<?>... listeners) {
+    public CompositeContext(RecordingListener<?>... listeners) {
         this(Arrays.asList(listeners));
     }
 
-    CompositeContext(List<? extends RecordingListener<?>> listeners) {
+    public CompositeContext(List<? extends RecordingListener<?>> listeners) {
         // Could be a .stream().collect(toMap(...)) but toMap fails on null values:
         // https://bugs.openjdk.java.net/browse/JDK-8148463
         addContexts(listeners);

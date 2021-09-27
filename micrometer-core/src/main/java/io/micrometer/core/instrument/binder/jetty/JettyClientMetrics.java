@@ -15,17 +15,18 @@
  */
 package io.micrometer.core.instrument.binder.jetty;
 
-import io.micrometer.api.annotation.Incubating;
-import io.micrometer.core.instrument.DistributionSummary;
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.api.instrument.Tag;
-import io.micrometer.core.instrument.Timer;
-import io.micrometer.core.instrument.config.MeterFilter;
-import io.micrometer.core.instrument.internal.OnlyOnceLoggingDenyMeterFilter;
+import java.util.Optional;
+
 import org.eclipse.jetty.client.api.ContentProvider;
 import org.eclipse.jetty.client.api.Request;
 
-import java.util.Optional;
+import io.micrometer.api.annotation.Incubating;
+import io.micrometer.api.instrument.Sample;
+import io.micrometer.api.instrument.Tag;
+import io.micrometer.core.instrument.DistributionSummary;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.config.MeterFilter;
+import io.micrometer.core.instrument.internal.OnlyOnceLoggingDenyMeterFilter;
 
 /**
  * Provides request metrics for Jetty {@link org.eclipse.jetty.client.HttpClient},
@@ -61,7 +62,7 @@ public class JettyClientMetrics implements Request.Listener {
 
     @Override
     public void onQueued(Request request) {
-        Timer.Sample sample = Timer.start(registry);
+        Sample sample = Sample.start(registry.config().recorder());
 
         request.onComplete(result -> {
             long requestLength = Optional.ofNullable(result.getRequest().getContent())
@@ -76,10 +77,10 @@ public class JettyClientMetrics implements Request.Listener {
                         .record(requestLength);
             }
 
-            sample.stop(Timer.builder(timingMetricName)
+            sample.lowCardinalityName(timingMetricName)
                     .description("Jetty HTTP client request timing")
                     .tags(httpRequestTags)
-                    .register(registry));
+                    .stop();
         });
     }
 

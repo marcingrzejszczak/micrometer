@@ -15,11 +15,11 @@
  */
 package io.micrometer.core.instrument.binder.httpcomponents;
 
-import io.micrometer.api.annotation.Incubating;
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.api.instrument.Tag;
-import io.micrometer.api.instrument.Tags;
-import io.micrometer.core.instrument.Timer;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.function.Function;
+
 import org.apache.http.HttpClientConnection;
 import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
@@ -27,10 +27,11 @@ import org.apache.http.HttpResponse;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.HttpRequestExecutor;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.function.Function;
+import io.micrometer.api.annotation.Incubating;
+import io.micrometer.api.instrument.Sample;
+import io.micrometer.api.instrument.Tag;
+import io.micrometer.api.instrument.Tags;
+import io.micrometer.core.instrument.MeterRegistry;
 
 /**
  * This HttpRequestExecutor tracks the request duration of every request, that
@@ -99,7 +100,7 @@ public class MicrometerHttpRequestExecutor extends HttpRequestExecutor {
 
     @Override
     public HttpResponse execute(HttpRequest request, HttpClientConnection conn, HttpContext context) throws IOException, HttpException {
-        Timer.Sample timerSample = Timer.start(registry);
+        Sample timerSample = Sample.start(registry.config().recorder());
 
         Tag method = Tag.of("method", request.getRequestLine().getMethod());
         Tag uri = Tag.of("uri", uriMapper.apply(request));
@@ -119,10 +120,10 @@ public class MicrometerHttpRequestExecutor extends HttpRequestExecutor {
                     .and(routeTags)
                     .and(uri, method, status);
 
-            timerSample.stop(Timer.builder(METER_NAME)
+            timerSample.lowCardinalityName(METER_NAME)
                     .description("Duration of Apache HttpClient request execution")
                     .tags(tags)
-                    .register(registry));
+                    .stop();
         }
     }
 

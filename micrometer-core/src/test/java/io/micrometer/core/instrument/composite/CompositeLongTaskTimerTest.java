@@ -33,14 +33,14 @@ class CompositeLongTaskTimerTest {
         MeterRegistry s1 = new SimpleMeterRegistry(SimpleConfig.DEFAULT, clock);
         LongTaskTimer anotherTimer = s1.more().longTaskTimer("long.task");
 
-        LongTaskTimer.Sample anotherSample = anotherTimer.start();
+        LongTaskSample anotherSample = anotherSample.start();
         clock.add(10, TimeUnit.NANOSECONDS);
 
         CompositeMeterRegistry registry = new CompositeMeterRegistry(clock);
         registry.add(s1);
 
         LongTaskTimer longTaskTimer = registry.more().longTaskTimer("long.task");
-        LongTaskTimer.Sample sample = longTaskTimer.start();
+        LongTaskSample sample = longTaskSample.start();
 
         clock.add(100, TimeUnit.NANOSECONDS);
         assertThat(anotherSample.stop()).isEqualTo(110);

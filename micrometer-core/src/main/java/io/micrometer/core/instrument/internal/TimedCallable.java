@@ -15,10 +15,11 @@
  */
 package io.micrometer.core.instrument.internal;
 
+import java.util.concurrent.Callable;
+
+import io.micrometer.api.instrument.Sample;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
-
-import java.util.concurrent.Callable;
 
 /**
  * A wrapper for a {@link Callable} with idle and execution timings.
@@ -28,24 +29,24 @@ class TimedCallable<V> implements Callable<V> {
     private final Timer executionTimer;
     private final Timer idleTimer;
     private final Callable<V> callable;
-    private final Timer.Sample idleSample;
+    private final Sample idleSample;
 
     TimedCallable(MeterRegistry registry, Timer executionTimer, Timer idleTimer, Callable<V> callable) {
         this.registry = registry;
         this.executionTimer = executionTimer;
         this.idleTimer = idleTimer;
         this.callable = callable;
-        this.idleSample = Timer.start(registry);
+        this.idleSample = Sample.start(registry.config().recorder());
     }
 
     @Override
     public V call() throws Exception {
-        idleSample.stop(idleTimer);
-        Timer.Sample executionSample = Timer.start(registry);
+        idleSample.stop();
+        Sample executionSample = Sample.start(registry.config().recorder());
         try {
             return callable.call();
         } finally {
-            executionSample.stop(executionTimer);
+            executionSample.stop();
         }
     }
 }

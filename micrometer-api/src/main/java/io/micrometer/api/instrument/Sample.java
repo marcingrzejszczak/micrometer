@@ -207,12 +207,12 @@ public class Sample implements IntervalRecording, AutoCloseable {
         recorder.getRecordingCustomizers().forEach(rc -> rc.customize(recording));
     }
 
-    public Sample setDescription(String description) {
+    public Sample description(String description) {
         this.description = description;
         return this;
     }
 
-    public Sample setLowCardinalityName(String lowCardinalityName) {
+    public Sample lowCardinalityName(String lowCardinalityName) {
         this.lowCardinalityName = lowCardinalityName;
         return this;
     }

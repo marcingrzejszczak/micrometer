@@ -31,7 +31,6 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.DistributionSummary;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.binder.BaseUnits;
 import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
 import io.micrometer.core.instrument.distribution.TimeWindowMax;
@@ -149,7 +148,7 @@ public class JettyConnectionMetrics extends AbstractLifeCycle implements Connect
 
     @Override
     public void onOpened(Connection connection) {
-        Timer.Sample started = Timer.start(registry);
+        Sample started = Sample.start(registry.config().recorder());
         synchronized (connectionSamplesLock) {
             connectionSamples.put(connection, started);
             maxConnections.record(connectionSamples.size());
@@ -158,18 +157,18 @@ public class JettyConnectionMetrics extends AbstractLifeCycle implements Connect
 
     @Override
     public void onClosed(Connection connection) {
-        Timer.Sample sample;
+        Sample sample;
         synchronized (connectionSamplesLock) {
             sample = connectionSamples.remove(connection);
         }
 
         if (sample != null) {
             String serverOrClient = connection instanceof HttpConnection ? "server" : "client";
-            sample.stop(Timer.builder("jetty.connections.request")
+            sample.lowCardinalityName("jetty.connections.request")
                     .description("Jetty client or server requests")
                     .tag("type", serverOrClient)
                     .tags(tags)
-                    .register(registry));
+                    .stop();
         }
 
         messagesIn.increment(connection.getMessagesIn());

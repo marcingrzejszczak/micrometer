@@ -61,7 +61,7 @@ public class TimerBenchmark {
 
     @Benchmark
     public int sumTimedWithSample() {
-        Timer.Sample sample = Timer.start(registry);
+        Sample sample = Sample.start(registry);
         int sum = sum();
         sample.stop(timer);
         return sum;

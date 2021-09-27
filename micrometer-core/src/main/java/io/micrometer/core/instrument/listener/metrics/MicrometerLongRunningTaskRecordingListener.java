@@ -57,20 +57,20 @@ public class MicrometerLongRunningTaskRecordingListener
     }
 
     @Override
-    public void onStart(IntervalRecording<LongRunningTaskContext> intervalRecording) {
+    public void onStart(IntervalRecording intervalRecording) {
         LongTaskTimer.Sample sample = LongTaskTimer.builder(intervalRecording.getEvent().getLowCardinalityName())
                 .description(intervalRecording.getEvent().getDescription()).tags(toTags(intervalRecording))
                 .register(this.registry).start();
-        intervalRecording.getContext().addSample(sample);
+        intervalRecording.getContext(this).addSample(sample);
     }
 
     @Override
-    public void onStop(IntervalRecording<LongRunningTaskContext> intervalRecording) {
-        intervalRecording.getContext().getSample().stop();
+    public void onStop(IntervalRecording intervalRecording) {
+        intervalRecording.getContext(this).getSample().stop();
     }
 
     @Override
-    public void onError(IntervalRecording<LongRunningTaskContext> intervalRecording) {
+    public void onError(IntervalRecording intervalRecording) {
         // TODO: If error add a tag
     }
 
@@ -93,13 +93,13 @@ public class MicrometerLongRunningTaskRecordingListener
 
     static class LongRunningTaskContext {
 
-        private LongTaskTimer.Sample sample;
+        private LongTaskSample sample;
 
-        void addSample(LongTaskTimer.Sample sample) {
+        void addSample(LongTaskSample sample) {
             this.sample = sample;
         }
 
-        LongTaskTimer.Sample getSample() {
+        LongTaskSample getSample() {
             return this.sample;
         }
 

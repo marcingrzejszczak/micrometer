@@ -258,7 +258,7 @@ class StatsdMeterRegistryTest {
         }
 
         AtomicReference<LongTaskTimer> ltt = new AtomicReference<>();
-        AtomicReference<LongTaskTimer.Sample> sample = new AtomicReference<>();
+        AtomicReference<LongTaskSample> sample = new AtomicReference<>();
 
         StepVerifier
                 .withVirtualTime(() -> {

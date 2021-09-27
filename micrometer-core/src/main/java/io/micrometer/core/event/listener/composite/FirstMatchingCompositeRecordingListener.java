@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.micrometer.api.event.listener.composite;
+package io.micrometer.core.event.listener.composite;
 
 import java.util.Arrays;
 import java.util.List;
@@ -24,6 +24,8 @@ import io.micrometer.api.event.Recording;
 import io.micrometer.api.event.instant.InstantRecording;
 import io.micrometer.api.event.interval.IntervalRecording;
 import io.micrometer.api.event.listener.RecordingListener;
+import io.micrometer.api.event.listener.composite.CompositeContext;
+import io.micrometer.api.event.listener.composite.CompositeRecordingListener;
 
 /**
  * Using this {@link RecordingListener} implementation, you can register

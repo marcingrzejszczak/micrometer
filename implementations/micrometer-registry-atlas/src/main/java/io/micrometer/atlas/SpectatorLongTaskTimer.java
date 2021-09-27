@@ -36,7 +36,7 @@ public class SpectatorLongTaskTimer extends DefaultLongTaskTimer implements Long
 
     @Override
     public Sample start() {
-        return new SpectatorSample(super.start(), timer.start());
+        return new SpectatorSample(super.start(), Sample.start());
     }
 
     @Override

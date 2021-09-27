@@ -26,7 +26,7 @@ import io.micrometer.api.event.listener.RecordingListener;
  * @since 6.0.0
  * @param <T> context type
  */
-public interface MetricsRecordingListener<CompositeContext> extends RecordingListener<CompositeContext> {
+public interface MetricsRecordingListener<T> extends RecordingListener<T> {
 
 	@Override
 	default void onCreate(IntervalRecording intervalRecording) {

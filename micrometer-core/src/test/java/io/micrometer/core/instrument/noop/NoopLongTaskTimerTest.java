@@ -42,7 +42,7 @@ class NoopLongTaskTimerTest {
 
     @Test
     void returnsStart() {
-        assertThat(timer.start()).isNotNull();
+        assertThat(Sample.start()).isNotNull();
     }
 
     @Test

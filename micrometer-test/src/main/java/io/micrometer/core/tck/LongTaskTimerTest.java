@@ -44,7 +44,7 @@ interface LongTaskTimerTest {
     default void record(MeterRegistry registry) {
         LongTaskTimer t = registry.more().longTaskTimer("my.timer");
 
-        LongTaskTimer.Sample sample = t.start();
+        LongTaskSample sample = t.start();
         clock(registry).add(10, TimeUnit.NANOSECONDS);
 
         assertAll(() -> assertEquals(10, t.duration(TimeUnit.NANOSECONDS)),

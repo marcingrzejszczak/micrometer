@@ -12,12 +12,12 @@ import io.micrometer.api.event.instant.InstantRecording;
 import io.micrometer.api.event.interval.IntervalEvent;
 import io.micrometer.api.event.interval.IntervalRecording;
 import io.micrometer.api.event.listener.RecordingListener;
-import io.micrometer.api.event.listener.composite.AllMatchingCompositeRecordingListener;
 import io.micrometer.api.event.listener.composite.CompositeContext;
 import io.micrometer.api.instrument.Cardinality;
 import io.micrometer.api.instrument.Clock;
 import io.micrometer.api.instrument.Sample;
 import io.micrometer.api.instrument.Tag;
+import io.micrometer.core.event.listener.composite.AllMatchingCompositeRecordingListener;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 

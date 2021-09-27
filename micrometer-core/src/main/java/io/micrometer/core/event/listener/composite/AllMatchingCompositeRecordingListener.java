@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.micrometer.api.event.listener.composite;
+package io.micrometer.core.event.listener.composite;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,6 +23,8 @@ import java.util.stream.Stream;
 import io.micrometer.api.event.instant.InstantRecording;
 import io.micrometer.api.event.interval.IntervalRecording;
 import io.micrometer.api.event.listener.RecordingListener;
+import io.micrometer.api.event.listener.composite.CompositeContext;
+import io.micrometer.api.event.listener.composite.CompositeRecordingListener;
 import io.micrometer.api.lang.NonNull;
 
 /**

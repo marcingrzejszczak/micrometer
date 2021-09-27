@@ -98,8 +98,8 @@ class JooqExecuteListener extends DefaultExecuteListener {
         }
 
         //noinspection unchecked
-        sample.setLowCardinalityName("jooq.query")
-                .setDescription("Execution time of a SQL query performed with JOOQ")
+        sample.lowCardinalityName("jooq.query")
+                .description("Execution time of a SQL query performed with JOOQ")
                 .tags(queryTags)
                 .tag("type", ctx.type().name().toLowerCase())
                 .tag("exception", exceptionName)

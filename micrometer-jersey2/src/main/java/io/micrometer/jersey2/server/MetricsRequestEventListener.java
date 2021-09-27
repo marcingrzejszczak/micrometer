@@ -50,7 +50,7 @@ public class MetricsRequestEventListener implements RequestEventListener {
     private final Map<ContainerRequest, Sample> shortTaskSample = Collections
         .synchronizedMap(new IdentityHashMap<>());
 
-    private final Map<ContainerRequest, Collection<LongTaskTimer.Sample>> longTaskSamples = Collections
+    private final Map<ContainerRequest, Collection<LongTaskSample>> longTaskSamples = Collections
         .synchronizedMap(new IdentityHashMap<>());
 
     private final Map<ContainerRequest, Set<Timed>> timedAnnotationsOnRequest = Collections
@@ -87,7 +87,7 @@ public class MetricsRequestEventListener implements RequestEventListener {
                 timedAnnotationsOnRequest.put(containerRequest, timedAnnotations);
                 shortTaskSample.put(containerRequest, Sample.start(registry.config().recorder()));
 
-                List<LongTaskTimer.Sample> longTaskSamples = longTaskTimers(timedAnnotations, event).stream().map(LongTaskTimer::start).collect(Collectors.toList());
+                List<LongTaskSample> longTaskSamples = longTaskTimers(timedAnnotations, event).stream().map(LongTaskTimer::start).collect(Collectors.toList());
                 if (!longTaskSamples.isEmpty()) {
                     this.longTaskSamples.put(containerRequest, longTaskSamples);
                 }
@@ -102,9 +102,9 @@ public class MetricsRequestEventListener implements RequestEventListener {
                     }
                 }
 
-                Collection<LongTaskTimer.Sample> longSamples = this.longTaskSamples.remove(containerRequest);
+                Collection<LongTaskSample> longSamples = this.longTaskSamples.remove(containerRequest);
                 if (longSamples != null) {
-                    for (LongTaskTimer.Sample longSample : longSamples) {
+                    for (LongTaskSample longSample : longSamples) {
                         longSample.stop();
                     }
                 }

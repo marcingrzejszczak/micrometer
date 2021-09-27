@@ -263,16 +263,18 @@ public abstract class AbstractMetricCollectingInterceptor {
         }
 
         /**
-         * Uses the given registry to create a {@link Sample Timer.Sample} that will be reported if the returned
-         * consumer is invoked.
+         * Uses the given registry to create a {@link Sample Sample} that will be
+         * reported if the returned consumer is invoked.
          *
          * @param registry The registry used to create the sample.
-         * @return The newly created consumer that will report the processing duration since calling this method and
-         *         invoking the returned consumer along with the status code.
+         * @return The newly created consumer that will report the processing duration
+         *         since calling this method and invoking the returned consumer along
+         *         with the status code.
          */
         public Consumer<Status.Code> newProcessingDurationTiming(final MeterRegistry registry) {
             final Sample timerSample = Sample.start(registry.config().recorder());
-            return code -> timerSample.stop(this.timerFunction.apply(code));
+            // TODO: What to do with this? -> this.timerFunction.apply(code)
+            return code -> timerSample.stop();
         }
 
     }

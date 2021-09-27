@@ -307,7 +307,7 @@ class DynatraceExporterV2Test {
         int prior = samples.get(0);
         for (Integer value : samples) {
             clock.add(prior - value, SECONDS);
-            longTaskTimer.start();
+            longTaskSample.start();
             prior = value;
         }
         clock(meterRegistry).add(samples.get(samples.size() - 1), SECONDS);
