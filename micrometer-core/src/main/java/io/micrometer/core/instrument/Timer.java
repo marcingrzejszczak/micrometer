@@ -27,7 +27,9 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
@@ -60,6 +62,17 @@ public interface Timer extends Meter, HistogramSupport {
      */
     static Sample start(MeterRegistry registry) {
         return new Sample(registry.config().clock(), registry.config().getTimerRecordingListeners());
+    }
+    
+    /**
+     * Start a timing sample.
+     *
+     * @param registry A meter registry whose clock is to be used
+     * @param sampleContext A {@link Sample.Context} context passed to the listeners 
+     * @return A timing sample with start time recorded.
+     */
+    static Sample start(MeterRegistry registry, Sample.Context sampleContext) {
+        return new Sample(registry.config().clock(), sampleContext, registry.config().getTimerRecordingListeners());
     }
 
     /**
@@ -274,6 +287,7 @@ public interface Timer extends Meter, HistogramSupport {
         private final long startTime;
         private final Clock clock;
         private final Collection<TimerRecordingListener> listeners;
+        private final Context context;
 
         @Deprecated
         Sample(Clock clock) {
@@ -281,10 +295,15 @@ public interface Timer extends Meter, HistogramSupport {
         }
 
         Sample(Clock clock, Collection<TimerRecordingListener> listeners) {
+           this(clock, Context.EMPTY, listeners);
+        }
+        
+        Sample(Clock clock, Context context, Collection<TimerRecordingListener> listeners) {
             this.clock = clock;
             this.startTime = clock.monotonicTime();
             this.listeners = listeners;
             this.listeners.forEach(listener -> listener.onStart(this));
+            this.context = context;
         }
 
         /**
@@ -309,6 +328,50 @@ public interface Timer extends Meter, HistogramSupport {
             timer.record(durationNs, TimeUnit.NANOSECONDS);
             this.listeners.forEach(listener -> listener.onStop(this, timer, Duration.ofNanos(durationNs)));
             return durationNs;
+        }
+        
+        // TODO: Can be useful to unify any measurements (e.g. pass in to a Span)
+        public long getStartTime() {
+            return this.startTime;
+        }
+        
+        public Context getContext() {
+            return this.context;
+        }
+        
+        /**
+         * A class passing mutable objects from a {@link Sample}
+         * to a {@link TimerRecordingListener}. Example of such an object might be
+         * an HTTP Request that needs to have its HTTP headers mutated to contain
+         * tracing related headers.
+         */
+        // TODO: This used to be an event
+        public static class Context {
+            
+            public static Context EMPTY = new Context(Collections.emptyMap());
+            
+            private final Map<Class<?>, Object> delegate;
+            
+            Context(Map<Class<?>, Object> delegate) {
+                this.delegate = delegate;
+            }
+            
+            public Context() {
+                this.delegate = new ConcurrentHashMap<>();
+            }
+            
+            public <T> Context put(Class<T> clazz, T object) {
+                this.delegate.put(clazz, object);
+                return this;
+            }
+            
+            public <T> T get(Class<T> clazz) {
+                return (T) this.delegate.get(clazz);
+            }
+            
+            public <T> T getOrDefault(Class<T> clazz, T defaultObject) {
+                return (T) this.delegate.getOrDefault(clazz, defaultObject);
+            }
         }
     }
 
