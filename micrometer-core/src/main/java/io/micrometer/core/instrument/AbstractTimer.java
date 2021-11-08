@@ -74,9 +74,11 @@ public abstract class AbstractTimer extends AbstractMeter implements Timer {
      * @param pauseDetector                 Compensation for coordinated omission.
      * @param baseTimeUnit                  The time scale of this timer.
      * @param supportsAggregablePercentiles Indicates whether the registry supports percentile approximations from histograms.
+     * @param tagsProvider                  Provider of tags.
      */
     protected AbstractTimer(Id id, Clock clock, DistributionStatisticConfig distributionStatisticConfig,
-                            PauseDetector pauseDetector, TimeUnit baseTimeUnit, boolean supportsAggregablePercentiles) {
+                            PauseDetector pauseDetector, TimeUnit baseTimeUnit, boolean supportsAggregablePercentiles, 
+                            @Nullable TagsProvider<?> tagsProvider) {
         super(id);
         this.clock = clock;
         this.baseTimeUnit = baseTimeUnit;
@@ -94,14 +96,23 @@ public abstract class AbstractTimer extends AbstractMeter implements Timer {
             // noop histogram
             this.histogram = NoopHistogram.INSTANCE;
         }
-    }
-    
-    
-
-    @Override
-    public void setTagsProvider(TagsProvider<?> tagsProvider) {
         this.tagsProvider = tagsProvider;
     }
+        
+    /**
+     * Creates a new timer.
+     *
+     * @param id                            The timer's name and tags.
+     * @param clock                         The clock used to measure latency.
+     * @param distributionStatisticConfig   Configuration determining which distribution statistics are sent.
+     * @param pauseDetector                 Compensation for coordinated omission.
+     * @param baseTimeUnit                  The time scale of this timer.
+     * @param supportsAggregablePercentiles Indicates whether the registry supports percentile approximations from histograms.
+     */
+    protected AbstractTimer(Id id, Clock clock, DistributionStatisticConfig distributionStatisticConfig,
+            PauseDetector pauseDetector, TimeUnit baseTimeUnit, boolean supportsAggregablePercentiles) {
+        this(id, clock, distributionStatisticConfig, pauseDetector, baseTimeUnit, supportsAggregablePercentiles, null);
+    }    
 
     @Override
     public TagsProvider<?> getTagsProvider() {

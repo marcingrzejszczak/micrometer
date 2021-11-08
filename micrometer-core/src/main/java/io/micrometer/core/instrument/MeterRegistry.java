@@ -21,6 +21,7 @@ import io.micrometer.core.instrument.config.MeterFilter;
 import io.micrometer.core.instrument.config.MeterFilterReply;
 import io.micrometer.core.instrument.config.NamingConvention;
 import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
+import io.micrometer.core.instrument.distribution.HistogramSnapshot;
 import io.micrometer.core.instrument.distribution.pause.NoPauseDetector;
 import io.micrometer.core.instrument.distribution.pause.PauseDetector;
 import io.micrometer.core.instrument.noop.NoopCounter;
@@ -50,6 +51,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -59,6 +61,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToLongFunction;
 
@@ -236,6 +239,81 @@ public abstract class MeterRegistry {
      * @return A new timer.
      */
     protected abstract Timer newTimer(Meter.Id id, DistributionStatisticConfig distributionStatisticConfig, PauseDetector pauseDetector);
+    
+    /**
+     * Build a new timer to be added to the registry. This is guaranteed to only be called if the timer doesn't already exist.
+     *
+     * @param id                          The id that uniquely identifies the timer.
+     * @param distributionStatisticConfig Configuration for published distribution statistics.
+     * @param pauseDetector               The pause detector to use for coordinated omission compensation.
+     * @param tagsProvider                The provider of tags.
+     * @return A new timer.
+     */
+    protected Timer newTimer(Meter.Id id, DistributionStatisticConfig distributionStatisticConfig, PauseDetector pauseDetector, TagsProvider<?> tagsProvider) {
+        Timer timer = newTimer(id, distributionStatisticConfig, pauseDetector);
+        if (tagsProvider == null) {
+            return timer;
+        }
+        // TODO: Will break stuff when casting should take place (e.g. instanceof checks for concrete timer implementation)
+        // TOOD: AbstractTimer has a changed constructor to include a tagsprovider so we would have to change all the impls...
+        return new Timer() {
+            
+            @Override
+            public HistogramSnapshot takeSnapshot() {
+                return timer.takeSnapshot();
+            }
+            
+            @Override
+            public Id getId() {
+                return timer.getId();
+            }
+            
+            @Override
+            public double totalTime(TimeUnit unit) {
+                return timer.totalTime(unit);
+            }
+            
+            @Override
+            public <T> T recordCallable(Callable<T> f) throws Exception {
+                return timer.recordCallable(f);
+            }
+            
+            @Override
+            public void record(Runnable f) {
+                timer.record(f);
+            }
+            
+            @Override
+            public <T> T record(Supplier<T> f) {
+                return timer.record(f);
+            }
+            
+            @Override
+            public void record(long amount, TimeUnit unit) {
+                timer.record(amount, unit);
+            }
+            
+            @Override
+            public double max(TimeUnit unit) {
+                return timer.max(unit);
+            }
+            
+            @Override
+            public long count() {
+                return timer.count();
+            }
+            
+            @Override
+            public TimeUnit baseTimeUnit() {
+                return timer.baseTimeUnit();
+            }
+            
+            @Override
+            public TagsProvider<?> getTagsProvider() {
+                return tagsProvider;
+            }
+        };
+    }
 
     /**
      * Build a new distribution summary to be added to the registry. This is guaranteed to only be called if the distribution summary doesn't already exist.
@@ -374,9 +452,21 @@ public abstract class MeterRegistry {
      * @return A new or existing timer.
      */
     Timer timer(Meter.Id id, DistributionStatisticConfig distributionStatisticConfig, PauseDetector pauseDetectorOverride) {
+        return timer(id, distributionStatisticConfig, pauseDetectorOverride, null);
+    }
+    
+    /**
+     * Only used by {@link Timer#builder(String)}.
+     *
+     * @param id                          The identifier for this timer.
+     * @param distributionStatisticConfig Configuration that governs how distribution statistics are computed.
+     * @param tagsProvider                Provider of tags.
+     * @return A new or existing timer.
+     */
+    Timer timer(Meter.Id id, DistributionStatisticConfig distributionStatisticConfig, PauseDetector pauseDetectorOverride, @Nullable TagsProvider<?> tagsProvider) {
         return registerMeterIfNecessary(Timer.class, id, distributionStatisticConfig, (id2, filteredConfig) -> {
             Meter.Id withUnit = id2.withBaseUnit(getBaseTimeUnitStr());
-            return newTimer(withUnit, filteredConfig.merge(defaultHistogramConfig()), pauseDetectorOverride);
+            return newTimer(withUnit, filteredConfig.merge(defaultHistogramConfig()), pauseDetectorOverride, tagsProvider);
         }, NoopTimer::new);
     }
 

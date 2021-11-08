@@ -94,15 +94,6 @@ public interface Timer extends Meter, HistogramSupport {
     }
     
     /**
-     * Sets {@link TagsProvider}.
-     * 
-     * @param tagsProvider tags provider
-     */
-    default void setTagsProvider(@Nullable TagsProvider<?> tagsProvider) {
-        
-    }
-    
-    /**
      * @return tags provider
      */
     @Nullable
@@ -320,7 +311,24 @@ public interface Timer extends Meter, HistogramSupport {
             this.registry.removeCurrentSample(this);
             return durationNs;
         }
+        
+        /**
+         * Records the duration of the operation.
+         *
+         * @param timer The timer builder to record the sample to.
+         * @return The total duration of the sample in nanoseconds
+         */
+        public long stop(Timer.Builder timer) {
+            return stop(timer.register(registry));
+        }
 
+        /**
+         * Restores this sample in e.g. a new thread. The underlying 
+         * {@link TimerRecordingListener} implementation can e.g. update its
+         * ThreadLocal entries.
+         * 
+         * @return this
+         */
         public Sample restore() {
             this.listeners.forEach(listener -> listener.onRestore(this, context));
             this.registry.setCurrentSample(this);
@@ -488,8 +496,7 @@ public interface Timer extends Meter, HistogramSupport {
                 combinedTags = combinedTags.and(this.tagsProvider.getLowCardinalityTags());
             }
             Timer timer = registry.timer(new Meter.Id(name, combinedTags, null, description, Type.TIMER), distributionConfigBuilder.build(),
-                    pauseDetector == null ? registry.config().pauseDetector() : pauseDetector);
-            timer.setTagsProvider(this.tagsProvider);
+                    pauseDetector == null ? registry.config().pauseDetector() : pauseDetector, this.tagsProvider);
             return timer;
         }
     }
